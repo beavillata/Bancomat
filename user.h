@@ -1,5 +1,5 @@
-#ifndef LOGIN_H
-#define LOGIN_H
+#ifndef USER_H
+#define USER_H
 
 class user{
 public:
@@ -15,8 +15,8 @@ public:
   //void stampa();
 
 private:
-  int numerocarta[4];
-  int PIN[4];
+  int numerocarta[13];
+  int PIN[5];
 };
 
 #endif
