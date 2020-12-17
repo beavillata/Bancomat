@@ -10,6 +10,7 @@ public:
 
   void CNC(); //check numero di numerocarta
   void CPIN(); //check pin
+  bool accesso(); //permette accesso
 
 private:
   int checkNC[13];
