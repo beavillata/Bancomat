@@ -26,6 +26,7 @@ int main() {
   login prova1 (tizio.getNC(),tizio.getPIN(), inputNC, inputPIN);
   prova1.CNC();
   prova1.CPIN();
+  if(prova1.accesso()==true){cout << "ACCESSO ESEGUITO" << "\n" << endl;}
 
   cout << "Tentativo 2:" << endl;
   //numero di carta giusto, pin giusto
@@ -33,6 +34,7 @@ int main() {
   login prova2 (tizio.getNC(), tizio.getPIN(), inputNC2, inputPIN);
   prova2.CNC();
   prova2.CPIN();
+  if(prova2.accesso()==true){cout << "ACCESSO ESEGUITO" << "\n" << endl;}
 
   cout << "Tentativo 3:" << endl;
   //numero di carta giusto, pin sbagliato
@@ -40,5 +42,5 @@ int main() {
   login prova3 (tizio.getNC(), tizio.getPIN(), inputNC2, inputPIN2);
   prova3.CNC();
   prova3.CPIN();
-
+  if(prova3.accesso()==true){cout << "ACCESSO ESEGUITO" << "\n" << endl;}
 }
