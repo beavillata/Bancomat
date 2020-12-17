@@ -65,20 +65,9 @@ void login::CPIN()
     if(checkbool==true){cout << "PIN Corretto" << endl;}
   }
 }
-//controllo se il pin è giusto
-/*
-void login::CPIN()
-{
-  if (checkbool == false){cout << "" << endl;} //Se il numero di carta è errato NON controllo il pin
-  else{
-    for(int i=0;i<5;i++)
-    {
-      if (USR->getPIN()[i] == *checkPIN[i]){}
-      else {checkbool=false;}
-    }
-    if (checkbool == false) {cout << "PIN errato" << endl;}
-    else {cout << "accesso" << endl;}
-  }
 
+bool login::accesso()
+{
+  if(checkbool==true){return true;}
+  else{return false;}
 }
-*/
