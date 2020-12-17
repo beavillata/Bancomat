@@ -6,12 +6,13 @@
 
 using namespace std;
 
-user::user(int nc[], int pin[])
+user::user(int nc[], int pin[], double saldo)
 {
   for(int i=0;i<13;i++)
   {numerocarta[i]=&nc[i];}
   for(int i=0;i<5;i++)
   {PIN[i]=&pin[i];}
+  SALDO=saldo;
 }
 
 void user::setNC(int nc[])
@@ -26,6 +27,11 @@ void user::setPIN(int pin[])
   {PIN[i]=&pin[i];}
 }
 
+void user::setSALDO(double saldo)
+{
+  SALDO=saldo;
+}
+
 int* user::getNC()
 {
   return *numerocarta;
@@ -36,7 +42,7 @@ int* user::getPIN()
   return *PIN;
 }
 
-//void punto::stampa()
-//{
-//  cout << "[" << TheX << "," << TheY << "," << TheZ << "]" << endl;
-//}
+double user::getSALDO()
+{
+  return SALDO;
+}
