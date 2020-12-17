@@ -15,8 +15,8 @@ public:
   //void stampa();
 
 private:
-  int numerocarta[13];
-  int PIN[5];
+  int *numerocarta[13];
+  int *PIN[5];
 };
 
 #endif
