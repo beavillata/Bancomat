@@ -4,6 +4,7 @@
 
 #include "user.h"
 #include "login.h"
+#include "operations.h"
 
 
 using namespace std;
@@ -19,11 +20,17 @@ int main() {
   int inputNC[13] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
   int inputPIN[5] = {1,2,3,4,5};
 
-  user tizio (tizioNC,tizioPIN);
-
+  user tizio (tizioNC,tizioPIN,tizioSALDO);
 
   login prova2 (tizio.getNC(), tizio.getPIN(), inputNC, inputPIN);
   if(prova2.accesso(prova2)==true){cout << "ACCESSO ESEGUITO" << "\n" << endl;}
+
+  cout << tizio.getSALDO() << endl;
+
+  operations prendo20 (tizio);
+  prendo20.prelievo(20);
+
+  cout << tizio.getSALDO() << endl;
 
   //PROVE LOGIN TIZIO:
 /*
