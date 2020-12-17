@@ -6,7 +6,7 @@
 class login{
 public:
   login(){};
-  login(user&, int[], int[]);
+  login(int[],int[], int[], int[]);
 
   void CNC(); //check numero di numerocarta
   void CPIN(); //check pin
@@ -14,7 +14,9 @@ public:
 private:
   int checkNC[13];
   int checkPIN[5];
-  user USR;
+  int inputNC[13];
+  int inputPIN[5];
+  bool checkbool;
 };
 
 #endif
