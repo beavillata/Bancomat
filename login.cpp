@@ -66,10 +66,10 @@ void login::CPIN()
   }
 }
 
-bool login::accesso(login &user)
+bool login::accesso()
 {
-  user.CNC();
-  user.CPIN();
+  CNC();
+  CPIN();
   if(checkbool==true){return true;}
   else{return false;}
 }
