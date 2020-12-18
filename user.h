@@ -1,25 +1,30 @@
 #ifndef USER_H
 #define USER_H
 
-#include "login.h"
+#include "csv/csv_file.h"
 
-class user{
+class User {
+
 public:
-  user(int* cardNumber, int* pin, double balance):
-    numerocarta(cardNumber), PIN(pin), SALDO(balance) {};
+  User(int);
 
-  void setNC(int*);
-  void setPIN(int*);
-  void setSALDO(double);
+  void setBalance(double*);
 
-  int* getNC();
-  int* getPIN();
-  double getSALDO();
+  std::string getCardNumber() const;
+  std::string getPIN() const;
+  double getBalance() const;
+
+  static CSVFile* getAccounts();
 
 private:
-  int *numerocarta;
-  int *PIN;
-  double SALDO;
+  std::string* cardNumber;
+  std::string* PIN;
+  double* balance;
+  int* id;
+
+  static CSVFile* accounts;
 };
+
+#include "login.h"
 
 #endif
