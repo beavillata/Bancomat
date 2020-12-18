@@ -1,75 +1,26 @@
-#include <math.h>
 #include <iostream>
-#include <stdlib.h>
+#include <string>
 
 #include "login.h"
-#include "user.h"
 
-using namespace std;
+bool Login::log = false;
 
-login::login(int *cnc, int *cpin, int *icn, int *ipin)
-{
-  for(int i=0; i<13; i++)
-  {
-    checkNC[i]=cnc[i];
-    inputNC[i]=icn[i];
-  }
-  for(int i=0; i<5; i++)
-  {
-    checkPIN[i]=cpin[i];
-    inputPIN[i]=ipin[i];
-  }
-  checkbool=true;
-}
-
-//controllo se il numero di carta è giusto
-void login::CNC()
-{
-  checkbool=true;
-  int i=0;
-  bool condition=true;
-  while(condition==true)
-  {
-    if(checkNC[i]==inputNC[i]){}
-    else
-    {
-      checkbool=false;
-      condition=false;
-      cout << "Numero di Carta ERRATO!" << endl;
+bool Login::check(std::string cardNumber, std::string pin, CSVFile* login) {
+  Login::log = false;
+  int row = login->col(0)->has(&cardNumber);
+  if(row != -1) {
+    std::cout << "Numero di carta corretto!" << std::endl;
+    if(login->row(row)->cell(1)->sget() == pin) {
+      std::cout << "PIN corretto, login!" << std::endl;
+      Login::log = true;
+      return true;
     }
-    i=i+1;
-    if(i==13){condition=false;}
+    return false;
   }
-  if(checkbool==true){cout << "Numero di Carta Corretto" << endl;}
+  std::cout << "Numero di carta errato!" << std::endl;
+  return false;
 }
 
-void login::CPIN()
-{
-  int i=0;
-  bool condition=true;
-  if(checkbool == false){cout << "" << endl;}
-  else
-  {
-    while(condition==true)
-    {
-      if(checkPIN[i]==inputPIN[i]){}
-      else
-      {
-        checkbool=false;
-        condition=false;
-        cout << "PIN ERRATO!" << endl;
-      }
-      i=i+1;
-      if(i==5){condition=false;}
-    }
-    if(checkbool==true){cout << "PIN Corretto" << endl;}
-  }
-}
-
-bool login::accesso()
-{
-  CNC();
-  CPIN();
-  if(checkbool==true){return true;}
-  else{return false;}
+bool Login::logged() {
+  return Login::log;
 }

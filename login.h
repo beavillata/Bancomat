@@ -1,23 +1,15 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include "user.h"
+#include "csv/csv_file.h"
 
-class login{
+class Login {
 public:
-  login(){};
-  login(int[],int[], int[], int[]);
-
-  void CNC(); //check numero di numerocarta
-  void CPIN(); //check pin
-  bool accesso(); //permette accesso
+  static bool check(std::string, std::string, CSVFile*);
+  static bool logged();
 
 private:
-  int checkNC[13];
-  int checkPIN[5];
-  int inputNC[13];
-  int inputPIN[5];
-  bool checkbool;
+  static bool log;
 };
 
 #endif
