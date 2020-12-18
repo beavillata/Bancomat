@@ -6,7 +6,6 @@
 #include "login.h"
 #include "operations.h"
 
-
 using namespace std;
 
 int main() {

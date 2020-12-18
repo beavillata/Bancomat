@@ -4,16 +4,25 @@
 #include <iostream>
 
 int main() {
-  std::string path("test.csv");
-  CSVFile* file = new CSVFile(path);
-  std::string ciao("ticotic");
-  file->cell(1, 0)->sset(ciao);
-  CSVRow* row = new CSVRow(6);
-  for(int i = 0; i < 6; i++) {
-    row->append(new CSVData<std::string>(1, 1, "bubu"));
-  }
-  file->append(row);
+  CSVFile* file = new CSVFile("test.csv");
+
+  file->print();
+
+  file->cell(2, 0)->sset("ciao");
+
+  file->print();
+
   file->save();
+
+  std::string in("98437598435937");
+
+  for(CSVCell* cell: file->col(0)->cells()) {
+    if(cell->sget() == in) {
+      std::cout << "Si" << std::endl;
+      break;
+    }
+  }
+
   delete file;
   return 0;
 }

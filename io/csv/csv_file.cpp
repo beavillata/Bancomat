@@ -63,7 +63,6 @@ CSVCol* CSVFile::col(const int i) {
   return colsVector[i];
 }
 
-// WORK IN PROGRESS
 // Write database to file
 void CSVFile::save() {
   std::ofstream file(path);

@@ -5,11 +5,11 @@
 
 class user{
 public:
-  user(){};
-  user(int[],int[],double);
+  user(int* cardNumber, int* pin, double balance):
+    numerocarta(cardNumber), PIN(pin), SALDO(balance) {};
 
-  void setNC(int[]);
-  void setPIN(int[]);
+  void setNC(int*);
+  void setPIN(int*);
   void setSALDO(double);
 
   int* getNC();
@@ -17,8 +17,8 @@ public:
   double getSALDO();
 
 private:
-  int *numerocarta[13];
-  int *PIN[5];
+  int *numerocarta;
+  int *PIN;
   double SALDO;
 };
 
