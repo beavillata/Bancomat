@@ -5,11 +5,14 @@
 
 class Login {
 public:
-  static bool check(std::string, std::string, CSVFile*);
+  static bool login(std::string, std::string);
   static bool logged();
+  static void logout();
 
 private:
   static bool log;
+  static CSVFile credentials;
+  static CSVRow* user;
 };
 
 #endif

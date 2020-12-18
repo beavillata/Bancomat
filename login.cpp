@@ -4,23 +4,32 @@
 #include "login.h"
 
 bool Login::log = false;
+CSVRow* Login::user = NULL;
+CSVFile Login::credentials("persistent/credentials.csv");
 
-bool Login::check(std::string cardNumber, std::string pin, CSVFile* login) {
-  Login::log = false;
-  int row = login->col(0)->has(&cardNumber);
-  if(row != -1) {
-    std::cout << "Numero di carta corretto!" << std::endl;
-    if(login->row(row)->cell(1)->sget() == pin) {
-      std::cout << "PIN corretto, login!" << std::endl;
-      Login::log = true;
+bool Login::login(std::string cardNumber, std::string pin) {
+  logout(); // First, logout if already logged in
+  // Look for the card number in the db
+  int row = credentials.col(0)->has(&cardNumber);
+  if(row != -1) { // We have a match
+    user = credentials.row(row); // Set user as row
+    if(user->cell(1)->sget() == pin) {
+      std::cout << "Matching credentials. User logged in." << std::endl;
+      log = true;
       return true;
     }
+    user = NULL;
     return false;
   }
-  std::cout << "Numero di carta errato!" << std::endl;
+  std::cout << "Incorrect card number or PIN." << std::endl;
   return false;
 }
 
 bool Login::logged() {
-  return Login::log;
+  return log;
+}
+
+void Login::logout() {
+  user = NULL;
+  log = false;
 }
