@@ -11,25 +11,23 @@ using namespace std;
 
 int main() {
   //DATABASE
-  int tizioNC[13] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+  int tizioNC[13] = {1,2,3,4,5,6,7,8,9,1,2,3,4};
   int tizioPIN[5] = {1,2,3,4,5};
   double tizioSALDO = 1000.2;
   //std::vector<int> v; //movimenti (??)
 
   //Tizio LOGIN
-  int inputNC[13] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+  int inputNC[13] = {1,2,3,4,5,6,7,8,9,1,2,3,4};
   int inputPIN[5] = {1,2,3,4,5};
 
   user tizio (tizioNC,tizioPIN,tizioSALDO);
 
   login prova2 (tizio.getNC(), tizio.getPIN(), inputNC, inputPIN);
-  if(prova2.accesso(prova2)==true){cout << "ACCESSO ESEGUITO" << "\n" << endl;}
-
+  //if(prova2.accesso()==true){cout << "ACCESSO ESEGUITO" << "\n" << endl;}
   cout << tizio.getSALDO() << endl;
-
-  operations prendo20 (tizio);
-  prendo20.prelievo(20);
-
+  operations operazioni (tizio,true);
+  operazioni.prelievo(50);
+  //operazioni.versamento(1000);
   cout << tizio.getSALDO() << endl;
 
   //PROVE LOGIN TIZIO:
