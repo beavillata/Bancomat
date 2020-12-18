@@ -34,18 +34,22 @@ void CSVFile::append(CSVRow *row) {
   n++;
 }
 
-void CSVFile::insert(CSVRow *row, int after) {
+void CSVFile::insert(CSVRow *row, const int after) {
   rowsVector.insert(rowsVector.begin() + after, row);
   n++;
 }
 
-void CSVFile::remove(int index) {
+void CSVFile::remove(const int index) {
   rowsVector.erase(rowsVector.begin() + index);
   n--;
 }
 
+CSVCell* CSVFile::cell(const int col, const int row) {
+  return colsVector[col]->cell(row);
+}
+
 // Get i-th row
-CSVRow* CSVFile::row(int i) {
+CSVRow* CSVFile::row(const int i) {
   return rowsVector[i];
 }
 
@@ -55,33 +59,29 @@ std::vector<CSVCol*> CSVFile::cols() {
 }
 
 // Get i-th col
-CSVCol* CSVFile::col(int i) {
+CSVCol* CSVFile::col(const int i) {
   return colsVector[i];
 }
 
 // WORK IN PROGRESS
 // Write database to file
 void CSVFile::save() {
-  std::stringstream stream;
+  std::ofstream file(path);
   for(int i = -1; i < n; i++) {
     for(int j = 0; j < m; j++) {
       if(i == -1) {
-        stream << colsVector[j]->type();
+        file << colsVector[j]->type();
       } else {
-        void* ptr;
-        rowsVector[i]->cell(j)->value(ptr);
-        std::cout << ptr;
-        std::string* a = static_cast<std::string*>(ptr);
-        stream << ptr;
+        std::string* a = static_cast<std::string*>(rowsVector[i]->cell(j)->get());
+        file << *a;
       }
-
       if(j < m - 1) {
-        stream << TOKEN_SEPARATOR;
+        file << TOKEN_SEPARATOR;
       }
     }
-    stream << std::endl;
+    file << std::endl;
   }
-  std::cout << stream.str();
+  file.close();
 }
 
 // Reload database from file

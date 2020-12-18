@@ -17,11 +17,12 @@ class CSVFile {
     std::vector<CSVRow*> rows();
     std::vector<CSVCol*> cols();
 
-    CSVRow* row(int row);
-    CSVCol* col(int col);
+    CSVRow* row(const int row);
+    CSVCol* col(const int col);
+    CSVCell* cell(const int col, const int row);
 
     void append(CSVRow* row);
-    void insert(CSVRow* row, int after);
+    void insert(CSVRow* row, const int after);
     void remove(int index);
 
     void save();

@@ -9,7 +9,16 @@ public:
   CSVCell(const int x, const int y):
     i(x), j(y) {};
   virtual void print() const {};
-  virtual void value(const void* ptr) const {};
+  virtual void* get() { return NULL; };
+  virtual void set(void* ptr) {};
+
+  int iget();
+  double dget();
+  std::string sget();
+
+  void iset(int value);
+  void dset(double value);
+  void sset(std::string value);
 
   int row();
   int col();
@@ -26,12 +35,16 @@ public:
   void print() const override {
     std::cout << data;
   };
-  void value(const void* ptr) const override {
-    ptr = &data;
+  void* get() override {
+    void* ptr = &data;
+    return ptr;
+  };
+  void set(void* ptr) override {
+    data = *(static_cast<T*>(ptr));
   };
 
 private:
-  const T data;
+  T data;
 };
 
 #endif
