@@ -1,6 +1,8 @@
 #ifndef USER_H
 #define USER_H
 
+#include "login.h"
+
 class user{
 public:
   user(){};
@@ -13,8 +15,6 @@ public:
   int* getNC();
   int* getPIN();
   double getSALDO();
-
-  //void stampa();
 
 private:
   int *numerocarta[13];
