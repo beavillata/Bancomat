@@ -26,6 +26,8 @@ class CSVFile {
     void insert(CSVRow*, const int);
     void remove(int index);
 
+    void rebase();
+    void clear();
     void save();
     void close();
     void print();
@@ -36,6 +38,9 @@ class CSVFile {
     int n, m;
 
     std::vector<std::string> tokenize(const std::string);
+    void clearCols();
+    void clearRows();
+    std::vector<std::vector<CSVCell*>> cellsVector;
     std::vector<CSVCol*> colsVector;
     std::vector<CSVRow*> rowsVector;
 };

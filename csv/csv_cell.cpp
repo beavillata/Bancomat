@@ -1,13 +1,5 @@
 #include "csv_cell.h"
 
-int CSVCell::row() {
-  return i;
-}
-
-int CSVCell::col() {
-  return j;
-}
-
 int CSVCell::iget() {
   int* ptr = static_cast<int*>(get());
   return *ptr;

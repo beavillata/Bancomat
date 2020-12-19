@@ -5,31 +5,25 @@
 
 class CSVDimension {
 public:
-  CSVDimension(const int x): i(x) {};
-
   void append(CSVCell*);
-  CSVCell* cell(int);
   int size();
+  void clear();
+  
+  CSVCell* cell(int);
   std::vector<CSVCell*> cells();
 
 protected:
   std::vector<CSVCell*> cellsVector;
-
-private:
-  int i;
 };
 
 class CSVRow: public CSVDimension {
-public:
-  CSVRow(const int x)
-    : CSVDimension(x) {};
+
 };
 
 class CSVCol: public CSVDimension {
 public:
-  CSVCol(const int x, const char ext)
-    : cellType(ext), CSVDimension(x) {};
-  ~CSVCol();
+  CSVCol(const char ext)
+    : cellType(ext) {};
   char type();
   std::vector<int> has(void*, int);
 

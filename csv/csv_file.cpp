@@ -10,37 +10,36 @@ const char CELL_TYPE_INT = 'i',
   COMMENT_HEAD = '#';
 
 CSVFile::~CSVFile() {
-  for(CSVCol* column: colsVector) {
-    delete column;
-  }
+  clear();
+}
 
-  for(CSVRow* row: rowsVector) {
-    delete row;
-  }
+void CSVFile::append(CSVRow *row) {
+  cellsVector.push_back(row->cells());
+  n++;
+  rebase();
+}
+
+void CSVFile::insert(CSVRow *row, const int after) {
+  cellsVector.insert(cellsVector.begin() + after, row->cells());
+  n++;
+  rebase();
+}
+
+void CSVFile::remove(const int index) {
+  cellsVector.erase(cellsVector.begin() + index);
+  n--;
+  rebase();
+}
+
+// ==================== GETTERS ==================== //
+
+CSVCell* CSVFile::cell(const int col, const int row) {
+  return cellsVector[row][col];
 }
 
 // Get all rows
 std::vector<CSVRow*> CSVFile::rows() {
   return rowsVector;
-}
-
-void CSVFile::append(CSVRow *row) {
-  rowsVector.push_back(row);
-  n++;
-}
-
-void CSVFile::insert(CSVRow *row, const int after) {
-  rowsVector.insert(rowsVector.begin() + after, row);
-  n++;
-}
-
-void CSVFile::remove(const int index) {
-  rowsVector.erase(rowsVector.begin() + index);
-  n--;
-}
-
-CSVCell* CSVFile::cell(const int col, const int row) {
-  return colsVector[col]->cell(row);
 }
 
 // Get i-th row
@@ -58,6 +57,8 @@ CSVCol* CSVFile::col(const int i) {
   return colsVector[i];
 }
 
+// ==================== WRITE CHANGES TO FILE ==================== //
+
 // Write database to file
 void CSVFile::save() {
   std::ofstream file(path);
@@ -66,7 +67,7 @@ void CSVFile::save() {
       if(i == -1) {
         file << colsVector[j]->type();
       } else {
-        rowsVector[i]->cell(j)->stream(file);
+        cellsVector[i][j]->stream(file);
       }
       if(j < m - 1) {
         file << TOKEN_SEPARATOR;
@@ -77,8 +78,43 @@ void CSVFile::save() {
   file.close();
 }
 
+// ==================== POINTER CLEANUP ==================== //
+
+void CSVFile::clear() {
+  for(CSVCol* column: colsVector) {
+    delete column;
+  }
+
+  for(CSVRow* row: rowsVector) {
+    delete row;
+  }
+
+  for(std::vector<CSVCell*> row: cellsVector) {
+    for(CSVCell* cell: row) {
+      delete cell;
+    }
+  }
+}
+
+void CSVFile::rebase() {
+  rowsVector.resize(n, new CSVRow());
+
+  for(int i = 0; i < n; i++) { // Counting rows
+    rowsVector[i]->clear();
+    for(int j = 0; j < m; j++) { // Counting cols
+      if(i == 0) {
+        colsVector[j]->clear();
+      }
+      rowsVector[i]->append(cellsVector[i][j]);
+      colsVector[j]->append(cellsVector[i][j]);
+    }
+  }
+}
+
 // Reload database from file
 void CSVFile::reload() {
+  clear();
+
   n = 0; // Number of rows
   m = 0; // Number of columns
 
@@ -87,62 +123,65 @@ void CSVFile::reload() {
     std::cout << "Unable to open file. Exiting..." << std::endl;
     exit(1);
   }
+  CSVCol* column;
+  CSVRow* row;
   std::string line;
   std::string head(1, COMMENT_HEAD);
   // Iterate through all lines in file
   n--; // Go back one line to have nice indices
   while(getline(file, line)) {
     if(line.substr(0, 1) == head) {
+      // Ignore comments
       continue;
     }
-    int j = 0; // Current column in single row loop
+
+    if(n >= 0) {
+      row = new CSVRow();
+      rowsVector.push_back(row);
+    }
     // Tokenize line using comma as separator
+    int j = 0; // Current column in single row loop
     for(std::string token: tokenize(line)) {
       // Build column array with the right types
       if(n < 0) { // We are on the first line (header)
         // Instantiate new column with correct index and type
-        CSVCol* column = new CSVCol(m, token.c_str()[0]);
+        column = new CSVCol(token.c_str()[0]);
         colsVector.push_back(column); // And add it to the std::vector
-        m++;
+        m++; // Increase column number counter
       } else { // We are parsing actual data
-        CSVCol* current = colsVector[j]; // Select current column
-        CSVCell* cell;
-        char type = current->type();
+        column = colsVector[j];
+        char type = column->type();
+        CSVCell* data;
         switch(type) {
         case CELL_TYPE_INT:
-          cell = new CSVData<int>(j, n, stoi(token));
+          data = new CSVData<int>(stoi(token));
           break;
         case CELL_TYPE_DOUBLE:
-          cell = new CSVData<double>(j, n, stod(token));
+          data = new CSVData<double>(stod(token));
           break;
         case CELL_TYPE_STRING:
-          cell = new CSVData<std::string>(j, n, token);
+          data = new CSVData<std::string>(token);
           break;
         }
-        current->append(cell);
+        row->append(data);
+        column->append(data);
       }
       j++; // j-th column of n-th row parsed
     }
-    n++; // One more row parsed, starting over
-  }
-  // Parsing the file generated our columns, now
-  // generate rows
-  for(int i = 0; i < n; i++) {
-    CSVRow* current = new CSVRow(i);
-    for(CSVCol* column: colsVector) {
-      current->append(column->cell(i));
+    if(n >= 0) {
+      cellsVector.push_back(row->cells());
     }
-    rowsVector.push_back(current);
+    n++; // One more row parsed, starting over
   }
 
   file.close();
 }
 
 void CSVFile::print() {
-  for(CSVRow* row: rowsVector) {
-    for(CSVCell* cell: row->cells()) {
-      cell->stream(std::cout);
+  for(int i = 0; i < n; i++) {
+    for(int j = 0; j < m; j++) {
       std::cout << "\t";
+      cellsVector[i][j]->stream(std::cout);
     }
     std::cout << std::endl;
   }

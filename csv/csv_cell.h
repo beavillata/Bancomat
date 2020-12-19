@@ -6,12 +6,11 @@
 
 class CSVCell {
 public:
-  CSVCell(const int x, const int y):
-    i(x), j(y) {};
+
   virtual void stream(std::ostream&) const {};
   virtual void* get() { return NULL; };
   virtual void set(void*) {};
-  virtual bool is(void*) {return false; };
+  virtual bool is(void*) { return false; };
 
   int iget();
   double dget();
@@ -20,19 +19,12 @@ public:
   void iset(int);
   void dset(double);
   void sset(std::string);
-
-  int row();
-  int col();
-
-private:
-  int i, j;
 };
 
 template <typename T>
 class CSVData: public CSVCell {
 public:
-  CSVData(const int x, const int y, const T value):
-    CSVCell(x, y), data(value) {};
+  CSVData(const T value): data(value) {};
   void stream(std::ostream& out) const override {
     out << data;
   };

@@ -6,6 +6,10 @@ void CSVDimension::append(CSVCell* cell) {
   cellsVector.push_back(cell);
 }
 
+void CSVDimension::clear() {
+  cellsVector.clear();
+}
+
 CSVCell* CSVDimension::cell(int index) {
   return cellsVector[index];
 }
@@ -16,12 +20,6 @@ int CSVDimension::size() {
 
 std::vector<CSVCell*> CSVDimension::cells() {
   return cellsVector;
-}
-
-CSVCol::~CSVCol() {
-  for(CSVCell* cell: cells()) {
-    delete cell;
-  }
 }
 
 char CSVCol::type() {
@@ -36,7 +34,7 @@ std::vector<int> CSVCol::has(void* target, int limit) {
       match.push_back(i);
     }
     int size = match.size();
-    if(size != -1 && size > limit) {
+    if(limit != -1 && size > limit) {
       break;
     }
     i++;
