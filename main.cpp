@@ -4,37 +4,37 @@
 #include "login.h"
 #include "operations.h"
 
-const int EXIT = 0,
-  BALANCE = 1,
-  MOVEMENTS = 2,
-  WITHDRAW = 3,
-  DEPOSIT = 4,
-  TRANSFER = 5;
+//TODO
+//Cheque: prima tipo poi Amount
+//tabellina carina
+
+const std::vector<std::string> mainOptions = {"Logout",
+  "Balance", "Movements", "Withdraw", "Deposit", "Transfer"};
 
 void operation() {
-  bool done = false;
-  int option;
-  std::cout << "0: abort \n 1: Print Balance \n 2: Print Movements \n 3: Withdraw \n 4: Deposit \n 5: Transfer" << std::endl;
-  while(std::cin >> option) {
-    switch(option) {
-    case EXIT:
+  int selected;
+  while(User::prompt(mainOptions, &selected)) {
+    std::cout << std::endl;
+    switch(selected) {
+    case 0:
       return;
-    case BALANCE:
+    case 1:
       Operations::printBalance();
       break;
-    case MOVEMENTS:
+    case 2:
       Operations::printMovements();
       break;
-    case WITHDRAW:
+    case 3:
       Operations::initWithdraw();
       break;
-    case DEPOSIT:
+    case 4:
       Operations::initDeposit();
       break;
-    case TRANSFER:
+    case 5:
       Operations::initTransfer();
       break;
     }
+    std::cout << std::endl;
   }
 }
 
@@ -43,14 +43,13 @@ int main(int argc, char* argv[]) {
 
   while(!exit) {
     std::string number, pin;
-    std::cout << "Please input your card number:" << std::endl;
+    std::cout << "Please input your card number: ";
     std::cin >> number;
-    std::cout << "Please input your PIN:" << std::endl;
+    std::cout << "Please input your PIN: ";
     std::cin >> pin;
 
     if(Login::login(number, pin)) {
-      std::cout << "Welcome" << std::endl;
-      Operations::printBalance();
+      std::cout << std::endl;
       operation();
     }
 

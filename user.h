@@ -16,6 +16,8 @@ public:
 
   int getID();
 
+  static bool prompt(std::vector<std::string>, int*);
+
 private:
   int id;
 

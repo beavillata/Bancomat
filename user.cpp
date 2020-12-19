@@ -23,3 +23,14 @@ double User::getBalance() {
 int User::getID() {
   return id;
 }
+
+bool User::prompt(std::vector<std::string> options, int* selected) {
+  for(int i = 0; i < options.size(); i++) {
+    std::cout << "[" << i << "] " << options[i] << " \t ";
+    if(i % 3 == 2) {
+      std::cout << std::endl;
+    }
+  }
+  std::cout << "Select option: ";
+  return static_cast<bool>(std::cin >> *selected);
+}

@@ -10,7 +10,8 @@ public:
   static void initTransfer();
 
 private:
-  static void addOperation(std::string, double, std::string);
+  static void addMovement(std::string, double, std::string, int);
+  static std::string getDate();
 };
 
 #endif
