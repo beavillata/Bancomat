@@ -10,7 +10,8 @@ const std::string TO_SELF("SELF"),
   MOVEMENT_DEPOSIT_CASH("CASH DEPOSIT"),
   MOVEMENT_DEPOSIT_CHEQUE("CHEQUE DEPOSIT"),
   MOVEMENT_WITHDRAW("WITHDRAW"),
-  MOVEMENTS_TRANSFER("TRANSFER");
+  MOVEMENTS_DEPOSIT_TRANSFER("TRANSFER DEPOSIT"),
+  MOVEMENTS_WITHDRAW_TRANSFER("TRANSFER WITHDRAW");
 
 void Operations::printBalance() {
   double balance = Login::user()->getBalance();
@@ -105,7 +106,7 @@ void Operations::initTransfer(){
   std::cin >> amount;
   if(initial-amount < 0){std::cout << "Insufficient credit: operation aborted...";}
   else{
-    addOperation(transferCard, amount, MOVEMENTS_TRANSFER);
+    addOperation(Login::user()->getID(), amount, MOVEMENTS_DEPOSIT_TRANSFER);
 
     std::vector<int> match = Database::credentials->col(1)->has(&transferCard, 1);
     Login::user()->setBalance(initial - amount);
@@ -119,6 +120,7 @@ void Operations::initTransfer(){
       initial = row->cell(1)->dget();
       Database::accounts->cell(1, id)->dset(initial+amount);
       Database::accounts->save();
+      addOperation(transferCard, amount, MOVEMENTS_WITHDRAW_TRANSFER);
       }
   }
 }
