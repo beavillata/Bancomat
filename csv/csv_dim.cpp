@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "csv_dim.h"
 
 void CSVDimension::append(CSVCell* cell) {

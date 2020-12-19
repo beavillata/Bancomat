@@ -1,9 +1,10 @@
 #ifndef CSVFILE_H
 #define CSVFILE_H
 
-#include "csv_dim.h"
 #include <string>
 #include <vector>
+
+#include "csv_dim.h"
 
 class CSVFile {
   public:
@@ -17,12 +18,12 @@ class CSVFile {
     std::vector<CSVRow*> rows();
     std::vector<CSVCol*> cols();
 
-    CSVRow* row(const int row);
-    CSVCol* col(const int col);
-    CSVCell* cell(const int col, const int row);
+    CSVRow* row(const int);
+    CSVCol* col(const int);
+    CSVCell* cell(const int, const int);
 
-    void append(CSVRow* row);
-    void insert(CSVRow* row, const int after);
+    void append(CSVRow*);
+    void insert(CSVRow*, const int);
     void remove(int index);
 
     void save();
@@ -34,7 +35,7 @@ class CSVFile {
 
     int n, m;
 
-    std::vector<std::string> tokenize(const std::string data);
+    std::vector<std::string> tokenize(const std::string);
     std::vector<CSVCol*> colsVector;
     std::vector<CSVRow*> rowsVector;
 };

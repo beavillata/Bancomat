@@ -1,7 +1,6 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include "csv/csv_file.h"
 #include "user.h"
 
 class Login {
@@ -10,12 +9,10 @@ public:
   static bool logged();
   static void logout();
 
-  static CSVFile* getCredentials();
+  static User* user();
 
 private:
-  static bool log;
-  static User* user;
-  static CSVFile* credentials;
+  static inline User* current = NULL;
 };
 
 #endif

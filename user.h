@@ -1,30 +1,22 @@
 #ifndef USER_H
 #define USER_H
 
-#include "csv/csv_file.h"
+#include "database.h"
 
 class User {
 
 public:
-  User(int);
+  User(int number): id(number) {};
 
-  void setBalance(double*);
+  void setBalance(double);
 
-  std::string getCardNumber() const;
-  std::string getPIN() const;
-  double getBalance() const;
-
-  static CSVFile* getAccounts();
+  std::string cardNumber();
+  std::string pin();
+  double balance();
 
 private:
-  std::string* cardNumber;
-  std::string* PIN;
-  double* balance;
-  int* id;
+  int id;
 
-  static CSVFile* accounts;
 };
-
-#include "login.h"
 
 #endif

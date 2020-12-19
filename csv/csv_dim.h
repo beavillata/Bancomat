@@ -1,15 +1,16 @@
 #ifndef CSVDIM_H
 #define CSVDIM_H
 
-#include "csv_cell.h"
 #include <vector>
+
+#include "csv_cell.h"
 
 class CSVDimension {
 public:
   CSVDimension(const int x): i(x) {};
 
-  void append(CSVCell* cell);
-  CSVCell* cell(int index);
+  void append(CSVCell*);
+  CSVCell* cell(int);
   int size();
   std::vector<CSVCell*> cells();
 
@@ -32,7 +33,7 @@ public:
     : cellType(ext), CSVDimension(x) {};
   ~CSVCol();
   char type();
-  int has(void* target);
+  int has(void*);
 
 private:
   char cellType;

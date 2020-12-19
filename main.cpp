@@ -1,23 +1,39 @@
 #include <iostream>
+#include <climits>
 
 #include "login.h"
-#include "user.h"
-#include "csv/csv_file.h"
+
+const char EXIT = 'O';
+
+void operation() {
+  bool done = false;
+  char option;
+  std::cout << std::endl;
+  // What do you want to do?
+  while(std::cin >> option) {
+    // WORK IN PROGRESS.... ITS 2 AM 
+  }
+}
 
 int main(int argc, char* argv[]) {
   bool exit = false;
+
   while(!exit) {
-    std::string cardNumber;
-    std::string pin;
+    std::string number, pin;
     std::cout << "Please input your card number:" << std::endl;
-    std::cin >> cardNumber;
+    std::cin >> number;
     std::cout << "Please input your PIN:" << std::endl;
     std::cin >> pin;
 
-    Login::login(cardNumber, pin);
+    if(Login::login(number, pin)) {
+      std::cout << std::endl << "Current balance: "
+        << Login::user()->balance() << " £" << std::endl;
+      operation();
+    }
 
+    std::cout << "Logging out..." << std::endl;
+    Login::logout();
   }
-  delete Login::getCredentials();
-  delete User::getAccounts();
+
   return 0;
 }

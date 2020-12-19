@@ -1,7 +1,5 @@
 #include "csv_cell.h"
 
-#include <iostream>
-
 int CSVCell::row() {
   return i;
 }

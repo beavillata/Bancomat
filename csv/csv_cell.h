@@ -8,18 +8,18 @@ class CSVCell {
 public:
   CSVCell(const int x, const int y):
     i(x), j(y) {};
-  virtual void stream(std::ostream& out) const {};
+  virtual void stream(std::ostream&) const {};
   virtual void* get() { return NULL; };
-  virtual void set(void* ptr) {};
-  virtual bool is(void* ptr) {return false; };
+  virtual void set(void*) {};
+  virtual bool is(void*) {return false; };
 
   int iget();
   double dget();
   std::string sget();
 
-  void iset(int value);
-  void dset(double value);
-  void sset(std::string value);
+  void iset(int);
+  void dset(double);
+  void sset(std::string);
 
   int row();
   int col();

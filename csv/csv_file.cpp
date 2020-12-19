@@ -1,18 +1,13 @@
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
 
 #include "csv_file.h"
-#include "csv_dim.h"
-#include "csv_cell.h"
 
 const char CELL_TYPE_INT = 'i',
   CELL_TYPE_DOUBLE = 'd',
-  CELL_TYPE_STRING = 's';
-
-const char TOKEN_SEPARATOR = ',';
+  CELL_TYPE_STRING = 's',
+  TOKEN_SEPARATOR = ',',
+  COMMENT_HEAD = '#';
 
 CSVFile::~CSVFile() {
   for(CSVCol* column: colsVector) {
@@ -93,9 +88,13 @@ void CSVFile::reload() {
     exit(1);
   }
   std::string line;
+  std::string head(1, COMMENT_HEAD);
   // Iterate through all lines in file
   n--; // Go back one line to have nice indices
   while(getline(file, line)) {
+    if(line.substr(0, 1) == head) {
+      continue;
+    }
     int j = 0; // Current column in single row loop
     // Tokenize line using comma as separator
     for(std::string token: tokenize(line)) {
@@ -152,7 +151,7 @@ void CSVFile::print() {
 std::vector<std::string> CSVFile::tokenize(std::string data) {
   int current = 0, last = 0;
   std::vector<std::string> tokens;
-  std::string separator(&TOKEN_SEPARATOR);
+  std::string separator(1, TOKEN_SEPARATOR);
   while((current = data.find(separator, last)) != std::string::npos) {
     tokens.push_back(data.substr(last, current - last));
     last = current + 1;
