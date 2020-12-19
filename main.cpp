@@ -5,8 +5,9 @@
 #include "operations.h"
 
 //TODO
-//Cheque: prima tipo poi Amount
 //tabellina carina
+//controllare caratteri numero carta e lunghezza
+//idem pin
 
 const std::vector<std::string> mainOptions = {"Logout",
   "Balance", "Movements", "Withdraw", "Deposit", "Transfer"};

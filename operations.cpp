@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <vector>
 #include <ctime>
@@ -27,7 +28,7 @@ void Operations::printMovements() {
     return;
   }
 
-  std::cout << "|\tTo\t|\tAmount\t|\tDate\t\t|\tType\t\t|" << std::endl;
+  std::cout << std::setw(13) << "To" << std::setw(6) << "Amount" << std::setw(20) << "Date" << std::setw(10) << "Type" << std::endl;
 
   std::string to, date, type;
   double amount;
@@ -40,8 +41,7 @@ void Operations::printMovements() {
     date = row->cell(3)->sget();
     type = row->cell(4)->sget();
 
-    std::cout << "|\t" << to << "\t|\t" << amount << "\t|\t"
-      << date << "\t|\t" << type << "\t|" << std::endl;
+    std::cout << std::setw(13) << to << std::setw(6) << amount << std::setw(20) << date << std::setw(10) << type << std::endl;
   }
 
 }
