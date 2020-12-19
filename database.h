@@ -12,6 +12,8 @@ public:
     credentials{new CSVFile("persistent/credentials.csv")};
   static inline std::unique_ptr<CSVFile>
     accounts{new CSVFile("persistent/accounts.csv")};
+  static inline std::unique_ptr<CSVFile>
+    movements{new CSVFile("persistent/movements.csv")};
 };
 
 #endif

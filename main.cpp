@@ -2,16 +2,38 @@
 #include <climits>
 
 #include "login.h"
+#include "operations.h"
 
-const char EXIT = 'O';
+const int EXIT = 0,
+  BALANCE = 1,
+  MOVEMENTS = 2,
+  WITHDRAW = 3,
+  DEPOSIT = 4,
+  TRANSFER = 5;
 
 void operation() {
   bool done = false;
-  char option;
-  std::cout << std::endl;
-  // What do you want to do?
+  int option;
+  std::cout << "0: abort \n 1: Print Balance \n 2: Print Movements \n 3: Withdraw \n 4: Deposit \n 5: Transfer" << std::endl;
   while(std::cin >> option) {
-    // WORK IN PROGRESS.... ITS 2 AM 
+    switch(option) {
+    case EXIT:
+      return;
+    case BALANCE:
+      Operations::printBalance();
+      break;
+    case MOVEMENTS:
+      Operations::printMovements();
+      break;
+    case WITHDRAW:
+      Operations::initWithdraw();
+      break;
+    case DEPOSIT:
+      Operations::initDeposit();
+      break;
+    case TRANSFER:
+      break;
+    }
   }
 }
 
@@ -26,8 +48,8 @@ int main(int argc, char* argv[]) {
     std::cin >> pin;
 
     if(Login::login(number, pin)) {
-      std::cout << std::endl << "Current balance: "
-        << Login::user()->balance() << " £" << std::endl;
+      std::cout << "Welcome" << std::endl;
+      Operations::printBalance();
       operation();
     }
 

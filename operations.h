@@ -1,20 +1,15 @@
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
 
-#include "user.h"
-#include "login.h"
-
-class operations{
+class Operations {
 public:
-  operations(){};
-  operations(user&, bool);
-
-  void prelievo(double);
-  void versamento(double);
+  static void printBalance();
+  static void printMovements();
+  static void initWithdraw();
+  static void initDeposit();
 
 private:
-  user *USR;
-  bool LOG;
+  static void addOperation(std::string, double, std::string);
 };
 
 #endif

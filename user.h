@@ -10,9 +10,11 @@ public:
 
   void setBalance(double);
 
-  std::string cardNumber();
-  std::string pin();
-  double balance();
+  std::string getCardNumber();
+  std::string getPin();
+  double getBalance();
+
+  int getID();
 
 private:
   int id;

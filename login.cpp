@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <string>
 
 #include "login.h"
@@ -6,7 +7,8 @@
 bool Login::login(std::string number, std::string pin) {
   logout(); // First, logout if already logged in
   // Look for the card number in the db
-  int found = Database::credentials->col(1)->has(&number);
+  std::vector<int> match = Database::credentials->col(1)->has(&number, 1);
+  int found = match[0];
   if(found != -1) { // We have a match
     CSVRow* row = Database::credentials->row(found);
     if(row->cell(2)->sget() == pin) {
