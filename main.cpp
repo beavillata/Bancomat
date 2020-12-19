@@ -32,6 +32,7 @@ void operation() {
       Operations::initDeposit();
       break;
     case TRANSFER:
+      Operations::initTransfer();
       break;
     }
   }

@@ -7,6 +7,7 @@ public:
   static void printMovements();
   static void initWithdraw();
   static void initDeposit();
+  static void initTransfer();
 
 private:
   static void addOperation(std::string, double, std::string);
