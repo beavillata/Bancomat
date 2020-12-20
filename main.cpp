@@ -1,34 +1,33 @@
 #include <iostream>
-#include <climits>
+#include <iomanip>
 
-#include "io.h"
 #include "login.h"
 #include "operations.h"
 
-//TODO
-//tabellina carina
-
 void operation() {
-  int selected;
-  while(IO::prompt(IO::OPTIONS_MAIN, selected)) {
-    std::cout << std::endl;
-    switch(selected) {
+  bool select = true;
+  while(select) {
+    switch(IO::prompt(IO::OPTIONS_MAIN)) {
     case IO::OPTIONS_MAIN_LOGOUT:
-      return;
+      select = false;
+      break;
     case IO::OPTIONS_MAIN_BALANCE:
       Operations::printBalance();
       break;
     case IO::OPTIONS_MAIN_MOVEMENTS:
       Operations::printMovements();
       break;
-    case IO::OPTIONS_MAIN_WITHDRAW:
-      Operations::handleWithdraw();
+    case IO::OPTIONS_MAIN_WITHDRAWAL:
+      Operations::handleWithdrawal();
       break;
     case IO::OPTIONS_MAIN_DEPOSIT:
       Operations::handleDeposit();
       break;
     case IO::OPTIONS_MAIN_TRANSFER:
       Operations::handleTransfer();
+      break;
+    default:
+      std::cout << "Invalid option selected." << std::endl;
       break;
     }
     std::cout << std::endl;
@@ -37,7 +36,8 @@ void operation() {
 
 int main(int argc, char* argv[]) {
   bool exit = false;
-  
+  std::cout << std::setprecision(2) << std::fixed;
+
   while(!exit) {
     std::string number, pin;
 

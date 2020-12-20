@@ -8,7 +8,7 @@
 
 class IO {
 public:
-  static bool prompt(std::vector<std::string>, int&);
+  static int prompt(std::vector<std::string>);
   static bool inputNumber(std::string&, bool positive = false,
     bool integer = false, int digits = -1);
   static std::string getDate();
@@ -19,8 +19,10 @@ public:
   static const std::string TO_SELF,
     MOVEMENT_DEPOSIT_CASH,
     MOVEMENT_DEPOSIT_CHEQUE,
-    MOVEMENT_WITHDRAW,
+    MOVEMENT_WITHDRAWAL,
     MOVEMENT_TRANSFER;
+
+  static const std::string CURRENCY;
 
   static const std::vector<std::string> OPTIONS_MAIN,
     OPTIONS_DEPOSIT;
@@ -28,7 +30,7 @@ public:
   static inline const int OPTIONS_MAIN_LOGOUT = 0,
     OPTIONS_MAIN_BALANCE = 1,
     OPTIONS_MAIN_MOVEMENTS = 2,
-    OPTIONS_MAIN_WITHDRAW = 3,
+    OPTIONS_MAIN_WITHDRAWAL = 3,
     OPTIONS_MAIN_DEPOSIT = 4,
     OPTIONS_MAIN_TRANSFER = 5;
 

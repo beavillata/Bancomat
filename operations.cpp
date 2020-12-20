@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <ctime>
+#include <cmath>
 
 #include "operations.h"
 #include "login.h"
@@ -10,37 +11,40 @@
 
 void Operations::printBalance() {
   double balance = Login::user()->getBalance();
-  std::cout << "Your balance is: €" << balance << std::endl;
+  std::cout << "Your balance is: " << IO::CURRENCY << " " << balance << std::endl;
 }
 
 void Operations::printMovements() {
   int number = Login::user()->getID();
   std::vector<int> match = IO::movements->getCol(0)->has(&number, -1);
-
   if(match[0] == -1) {
     std::cout << "No movements found for this user." << std::endl;
     return;
   }
 
-  std::cout << std::setw(13) << "To" << std::setw(6) << "Amount" << std::setw(20) << "Date" << std::setw(10) << "Type" << std::endl;
+  std::cout <<
+    std::left << std::setw(16) << "Beneficiary" <<
+    std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
+    std::setw(5) << " " <<
+    std::left << std::setw(25) << "Date" <<
+    std::left << "Type" << std::endl << std::endl;
 
-  std::string to, date, type;
-  double amount;
-
+  CSVRow* current;
   for(int i: match) {
-    CSVRow* row = IO::movements->getRow(i);
-
-    to = row->getCell(1)->sget();
-    amount = row->getCell(2)->dget();
-    date = row->getCell(3)->sget();
-    type = row->getCell(4)->sget();
-
-    std::cout << std::setw(13) << to << std::setw(6) << amount << std::setw(20) << date << std::setw(10) << type << std::endl;
+    current = IO::movements->getRow(i);
+    std::cout <<
+      std::left << std::left << std::setw(16) <<
+      current->getCell(1)->sget() <<
+      std::right << std::setw(15) <<
+      current->getCell(2)->dget() << std::setw(5) << " " <<
+      std::left << std::setw(25) <<
+      current->getCell(3)->sget() <<
+      std::left <<
+      current->getCell(4)->sget() << std::endl;
   }
-
 }
 
-void Operations::handleWithdraw() {
+void Operations::handleWithdrawal() {
   double initial = Login::user()->getBalance();
 
   std::cout << "Input withdrawal amount: ";
@@ -51,39 +55,59 @@ void Operations::handleWithdraw() {
     return;
   }
 
-  double amount = stod(input);
-  if(initial - amount <= 0) {
+  double amount = std::ceil(stod(input) * 100.0) / 100.0;
+  if(initial - amount < 0) {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
   } else {
-    Login::user()->addMovement(IO::TO_SELF, -amount, IO::MOVEMENT_WITHDRAW);
+    Login::user()->addMovement(IO::TO_SELF, -amount, IO::MOVEMENT_WITHDRAWAL);
     Login::user()->setBalance(initial - amount);
 
+    std::vector<double> dens{500.0, 200.0, 100.0, 50.0, 20.0, 10.0, 5.0};
+    int size = dens.size();
+    std::cout << "Dispensing ";
+    for(int i = 0; i < size; i++) {
+      int n = amount / dens[i];
+      if(n == 0) continue;
+
+      amount -= dens[i] * n;
+      std::cout << n << " " << IO::CURRENCY << " " << dens[i];
+
+      if(amount >= dens[size - 1]) std::cout << ", ";
+    }
+    std::cout << " banknotes and " << IO::CURRENCY << " " <<
+      amount << " in coins." << std::endl;
     printBalance();
   }
 }
 
 void Operations::handleDeposit() {
   double initial = Login::user()->getBalance();
-  std::string type;
-  int option;
-  IO::prompt(IO::OPTIONS_DEPOSIT, option);
-  switch(option) {
-  case 0:
-    return;
-  case 1:
-    type = IO::MOVEMENT_DEPOSIT_CASH;
-    break;
-  case 2:
-    std::cout << "Input cheque number: ";
-    std::string cheque;
-    if(IO::inputNumber(cheque, true, true)) {
-      type = IO::MOVEMENT_DEPOSIT_CHEQUE + "@" + cheque;
-    } else {
-      std::cout << "Invalid cheque number.";
+  std::string type, cheque;
+  bool select = true;
+  while(select) {
+    switch(IO::prompt(IO::OPTIONS_DEPOSIT)) {
+    case 0:
       return;
+    case 1:
+      type = IO::MOVEMENT_DEPOSIT_CASH;
+      select = false;
+      break;
+    case 2:
+      std::cout << "Input cheque number: ";
+      // Assume 7-digit code for cheque
+      if(IO::inputNumber(cheque, true, true, 7)) {
+        type = IO::MOVEMENT_DEPOSIT_CHEQUE + " < " + cheque;
+      } else {
+        std::cout << "Invalid cheque number." << std::endl;
+        return;
+      }
+      select = false;
+      break;
+    default:
+      std::cout << "Invalid option selected." << std::endl;
+      break;
     }
-    break;
   }
 
   std::cout << "Input deposit amount: ";
@@ -94,7 +118,7 @@ void Operations::handleDeposit() {
     return;
   }
 
-  double amount = stod(input);
+  double amount = std::ceil(stod(input) * 100.0) / 100.0;
   Login::user()->addMovement(IO::TO_SELF, amount, type);
   Login::user()->setBalance(initial + amount);
 
@@ -118,7 +142,7 @@ void Operations::handleTransfer() {
     return;
   }
 
-  double amount = stod(input);
+  double amount = std::ceil(stod(input) * 100.0) / 100.0;
   if(initial - amount < 0) {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
@@ -139,7 +163,7 @@ void Operations::handleTransfer() {
       Login::user()->addMovement(beneficiary, -amount, IO::MOVEMENT_TRANSFER);
       Login::user()->setBalance(initial - amount);
 
-      std::string type = IO::MOVEMENT_TRANSFER + "@" +
+      std::string type = IO::MOVEMENT_TRANSFER + " < " +
         Login::user()->getCardNumber();
       other.addMovement(IO::TO_SELF, amount, type);
       other.setBalance(other.getBalance() + amount);

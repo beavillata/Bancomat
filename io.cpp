@@ -1,3 +1,6 @@
+#include <iomanip>
+#include <climits>
+
 #include "io.h"
 
 std::unique_ptr<CSVFile>
@@ -10,10 +13,12 @@ std::unique_ptr<CSVFile>
   IO::external{new CSVFile("persistent/external.csv")};
 
 const std::string IO::TO_SELF("SELF"),
-  IO::MOVEMENT_DEPOSIT_CASH("CASHDEPOSIT"),
-  IO::MOVEMENT_DEPOSIT_CHEQUE("CHEQUEDEPOSIT"),
-  IO::MOVEMENT_WITHDRAW("WITHDRAW"),
+  IO::MOVEMENT_DEPOSIT_CASH("DEPOSIT: CASH"),
+  IO::MOVEMENT_DEPOSIT_CHEQUE("DEPOSIT: CHEQUE"),
+  IO::MOVEMENT_WITHDRAWAL("WITHDRAWAL"),
   IO::MOVEMENT_TRANSFER("TRANSFER");
+
+const std::string IO::CURRENCY("EUR");
 
 const std::vector<std::string> IO::OPTIONS_MAIN = {"Logout",
   "Balance", "Movements", "Withdraw", "Deposit", "Transfer"};
@@ -21,15 +26,15 @@ const std::vector<std::string> IO::OPTIONS_MAIN = {"Logout",
 const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
   "Cash deposit", "Cheque deposit"};
 
-bool IO::prompt(std::vector<std::string> options, int& selected) {
+int IO::prompt(std::vector<std::string> options) {
   for(int i = 0; i < options.size(); i++) {
-    std::cout << "[" << i << "] " << options[i] << " \t ";
-    if(i % 3 == 2) {
-      std::cout << std::endl;
-    }
+    std::cout << std::left << "[" << i << "] " << std::setw(15) << options[i];
+    if(i % 3 == 2) std::cout << std::endl;
   }
   std::cout << "Select option: ";
-  return static_cast<bool>(std::cin >> selected);
+  std::string selected;
+  if(inputNumber(selected, true, true, 1)) return stoi(selected);
+  else return -1;
 }
 
 bool IO::inputNumber(std::string& ref, bool positive,
