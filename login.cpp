@@ -7,6 +7,7 @@
 bool Login::login(std::string number, std::string pin) {
   logout(); // First, logout if already logged in
   // Look for the card number in the db
+  std::cout << number;
   std::vector<int> match = IO::credentials->getCol(1)->has(&number, 1);
   int found = match[0];
   if(found != -1) { // We have a match

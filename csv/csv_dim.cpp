@@ -27,22 +27,22 @@ char CSVCol::getType() const {
   return cellType;
 }
 
+CSVDimension& CSVDimension::operator<<(CSVCell& cell) {
+  CSVCell* ptr = &cell;
+  return *(append(ptr));
+}
+
 std::vector<int> CSVCol::has(void* target, const int limit) const {
   std::vector<int> match;
   int i = 0;
   for(CSVCell* cell: cellsVector) {
-    if(cell->is(target)) {
-      match.push_back(i);
-    }
+    if(cell->is(target)) match.push_back(i);
+
     int size = match.size();
-    if(limit != -1 && size > limit) {
-      break;
-    }
+    if(limit != -1 && size > limit) break;
     i++;
   }
 
-  if(match.size() == 0) {
-    match.push_back(-1);
-  }
+  if(match.size() == 0) match.push_back(-1);
   return match;
 }

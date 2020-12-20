@@ -40,38 +40,23 @@ void Operations::printMovements() {
 
 }
 
-void Operations::addMovement(std::string to,
-  double amount, std::string type, int id = Login::user()->getID()) {
-
-  CSVRow* operation = new CSVRow();
-
-  operation->append(new CSVData<int>(id))
-    ->append(new CSVData<std::string>(to))
-    ->append(new CSVData<double>(amount))
-    ->append(new CSVData<std::string>(getDate()))
-    ->append(new CSVData<std::string>(type));
-
-  IO::movements->append(operation);
-  IO::movements->save();
-}
-
 void Operations::handleWithdraw() {
   double initial = Login::user()->getBalance();
 
   std::cout << "Input withdrawal amount: ";
-  double amount;
-  std::cin >> amount;
+  std::string input;
 
-  if(amount < 0) {
+  if(!IO::inputNumber(input, true)) {
     std::cout << "Amount must be a positive number." << std::endl;
     return;
   }
 
+  double amount = stod(input);
   if(initial - amount <= 0) {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
   } else {
-    addMovement(IO::TO_SELF, -amount, IO::MOVEMENT_WITHDRAW);
+    Login::user()->addMovement(IO::TO_SELF, -amount, IO::MOVEMENT_WITHDRAW);
     Login::user()->setBalance(initial - amount);
 
     printBalance();
@@ -82,7 +67,7 @@ void Operations::handleDeposit() {
   double initial = Login::user()->getBalance();
   std::string type;
   int option;
-  IO::prompt(IO::OPTIONS_DEPOSIT, &option);
+  IO::prompt(IO::OPTIONS_DEPOSIT, option);
   switch(option) {
   case 0:
     return;
@@ -92,21 +77,25 @@ void Operations::handleDeposit() {
   case 2:
     std::cout << "Input cheque number: ";
     std::string cheque;
-    std::cin >> cheque;
-    type = IO::MOVEMENT_DEPOSIT_CHEQUE + "@" + cheque;
+    if(IO::inputNumber(cheque, true, true)) {
+      type = IO::MOVEMENT_DEPOSIT_CHEQUE + "@" + cheque;
+    } else {
+      std::cout << "Invalid cheque number.";
+      return;
+    }
     break;
   }
 
   std::cout << "Input deposit amount: ";
-  double amount;
-  std::cin >> amount;
+  std::string input;
 
-  if(amount < 0) {
+  if(!IO::inputNumber(input, true)) {
     std::cout << "Amount must be a positive number." << std::endl;
     return;
   }
 
-  addMovement(IO::TO_SELF, amount, type);
+  double amount = stod(input);
+  Login::user()->addMovement(IO::TO_SELF, amount, type);
   Login::user()->setBalance(initial + amount);
 
   printBalance();
@@ -117,17 +106,19 @@ void Operations::handleTransfer() {
 
   std::cout << "Input beneficiary's card number: ";
   std::string beneficiary;
-  std::cin >> beneficiary;
+  if(!IO::inputNumber(beneficiary, true, true, 16)) {
+    std::cout << "Invalid card number." << std::endl;
+    return;
+  }
 
   std::cout << "Input transfer amount: " << std::endl;
-  double amount;
-  std::cin >> amount;
-
-  if(amount < 0) {
+  std::string input;
+  if(!IO::inputNumber(input, true)) {
     std::cout << "Amount must be a positive number." << std::endl;
     return;
   }
 
+  double amount = stod(input);
   if(initial - amount < 0) {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
@@ -143,17 +134,16 @@ void Operations::handleTransfer() {
         return;
       }
 
-      addMovement(beneficiary, -amount, IO::MOVEMENT_TRANSFER);
+      User other(id);
+
+      Login::user()->addMovement(beneficiary, -amount, IO::MOVEMENT_TRANSFER);
       Login::user()->setBalance(initial - amount);
 
-      match = IO::accounts->getCol(0)->has(&id, 1);
-      row = IO::accounts->getRow(match[0]);
-      initial = row->getCell(1)->dget();
+      std::string type = IO::MOVEMENT_TRANSFER + "@" +
+        Login::user()->getCardNumber();
+      other.addMovement(IO::TO_SELF, amount, type);
+      other.setBalance(other.getBalance() + amount);
 
-      IO::accounts->getCell(1, id)->dset(initial + amount);
-      IO::accounts->save();
-
-      addMovement(IO::TO_SELF, amount, IO::MOVEMENT_TRANSFER, id);
       printBalance();
     } else {
       std::cout << "External bank name: ";
@@ -162,11 +152,11 @@ void Operations::handleTransfer() {
 
       CSVRow* transfer = new CSVRow();
 
-      transfer->append(new CSVData<int>(Login::user()->getID()))
-        ->append(new CSVData<std::string>(beneficiary))
-        ->append(new CSVData<double>(amount))
-        ->append(new CSVData<std::string>(bank))
-        ->append(new CSVData<std::string>(getDate()));
+      transfer->append(new CSVData<int>(Login::user()->getID()))->
+        append(new CSVData<std::string>(beneficiary))->
+        append(new CSVData<double>(amount))->
+        append(new CSVData<std::string>(bank))->
+        append(new CSVData<std::string>(IO::getDate()));
 
       IO::external->append(transfer);
       IO::external->save();
@@ -174,13 +164,4 @@ void Operations::handleTransfer() {
       std::cout << "Transaction has to be approved." << std::endl;
     }
   }
-}
-
-std::string Operations::getDate() {
-      time_t timer = time(NULL);
-      char datec[26];
-      strftime(datec, 26, "%Y/%m/%d %H:%M:%S", localtime(&timer));
-
-      std::string date(datec);
-      return date;
 }

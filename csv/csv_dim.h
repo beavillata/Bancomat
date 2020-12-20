@@ -6,6 +6,10 @@
 class CSVDimension {
 public:
   CSVDimension* append(CSVCell*);
+
+  // Unused, for now
+  CSVDimension& operator<<(CSVCell&);
+
   int getSize() const;
   void clear();
 

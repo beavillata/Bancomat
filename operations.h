@@ -8,10 +8,6 @@ public:
   static void handleWithdraw();
   static void handleDeposit();
   static void handleTransfer();
-
-private:
-  static void addMovement(std::string, double, std::string, int);
-  static std::string getDate();
 };
 
 #endif

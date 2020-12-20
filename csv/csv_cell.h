@@ -6,7 +6,6 @@
 
 class CSVCell {
 public:
-
   virtual void stream(std::ostream&) const {};
   virtual void* get() { return NULL; };
   virtual void set(void*) {};
@@ -28,13 +27,16 @@ public:
   void stream(std::ostream& out) const override {
     out << data;
   };
+
   void* get() override {
     void* ptr = &data;
     return ptr;
   };
+
   void set(void* ptr) override {
     data = *(static_cast<T*>(ptr));
   };
+
   bool is(void* ptr) const override {
     return (data == *(static_cast<T*>(ptr)));
   };

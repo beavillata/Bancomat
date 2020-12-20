@@ -8,10 +8,11 @@
 
 class CSVFile {
   public:
-    CSVFile(const std::string file): path(file) {
-      reload();
-    };
+    CSVFile(const std::string file): path(file) { reload(); };
     ~CSVFile();
+
+    // Unused, for now
+    CSVFile& operator<<(CSVRow&);
 
     void reload();
 
@@ -22,7 +23,7 @@ class CSVFile {
     CSVCol* getCol(const int) const;
     CSVCell* getCell(const int, const int) const;
 
-    CSVFile* append(const CSVRow*);
+    CSVFile* append(CSVRow*);
     CSVFile* insert(const CSVRow*, const int);
     CSVFile* remove(const int);
 

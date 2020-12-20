@@ -13,12 +13,17 @@ CSVFile::~CSVFile() {
   clear();
 }
 
-CSVFile* CSVFile::append(const CSVRow *row) {
+CSVFile* CSVFile::append(CSVRow *row) {
   cellsVector.push_back(row->getCells());
   n++;
   rebase();
 
   return this;
+}
+
+CSVFile& CSVFile::operator<<(CSVRow& row) {
+  CSVRow* ptr = &row;
+  return *(append(ptr));
 }
 
 CSVFile* CSVFile::insert(const CSVRow *row, const int after) {
@@ -70,21 +75,17 @@ void CSVFile::save() {
   std::ofstream file(path);
   for(int i = -1; i < n; i++) {
     for(int j = 0; j < m; j++) {
-      if(i == -1) {
-        file << colsVector[j]->getType();
-      } else {
-        cellsVector[i][j]->stream(file);
-      }
-      if(j < m - 1) {
-        file << TOKEN_SEPARATOR;
-      }
+      if(i == -1) file << colsVector[j]->getType();
+      else cellsVector[i][j]->stream(file);
+
+      if(j < m - 1) file << TOKEN_SEPARATOR;
     }
     file << std::endl;
   }
   file.close();
 }
 
-// ==================== POINTER CLEANUP ==================== //
+// ==================== HEAP CLEANUP ==================== //
 
 void CSVFile::clear() {
   for(CSVCol* column: colsVector) {
@@ -108,9 +109,8 @@ void CSVFile::rebase() {
   for(int i = 0; i < n; i++) { // Counting rows
     rowsVector[i]->clear();
     for(int j = 0; j < m; j++) { // Counting cols
-      if(i == 0) {
-        colsVector[j]->clear();
-      }
+      if(i == 0) colsVector[j]->clear();
+
       rowsVector[i]->append(cellsVector[i][j]);
       colsVector[j]->append(cellsVector[i][j]);
     }
@@ -136,10 +136,8 @@ void CSVFile::reload() {
   // Iterate through all lines in file
   n--; // Go back one line to have nice indices
   while(getline(file, line)) {
-    if(line.substr(0, 1) == head) {
-      // Ignore comments
-      continue;
-    }
+    // Ignore comments
+    if(line.substr(0, 1) == head) continue;
 
     if(n >= 0) {
       row = new CSVRow();
@@ -172,11 +170,10 @@ void CSVFile::reload() {
         row->append(data);
         column->append(data);
       }
+
       j++; // j-th column of n-th row parsed
     }
-    if(n >= 0) {
-      cellsVector.push_back(row->getCells());
-    }
+    if(n >= 0) cellsVector.push_back(row->getCells());
     n++; // One more row parsed, starting over
   }
 

@@ -7,29 +7,27 @@
 
 //TODO
 //tabellina carina
-//controllare caratteri numero carta e lunghezza
-//idem pin
 
 void operation() {
   int selected;
-  while(IO::prompt(IO::OPTIONS_MAIN, &selected)) {
+  while(IO::prompt(IO::OPTIONS_MAIN, selected)) {
     std::cout << std::endl;
     switch(selected) {
-    case 0:
+    case IO::OPTIONS_MAIN_LOGOUT:
       return;
-    case 1:
+    case IO::OPTIONS_MAIN_BALANCE:
       Operations::printBalance();
       break;
-    case 2:
+    case IO::OPTIONS_MAIN_MOVEMENTS:
       Operations::printMovements();
       break;
-    case 3:
+    case IO::OPTIONS_MAIN_WITHDRAW:
       Operations::handleWithdraw();
       break;
-    case 4:
+    case IO::OPTIONS_MAIN_DEPOSIT:
       Operations::handleDeposit();
       break;
-    case 5:
+    case IO::OPTIONS_MAIN_TRANSFER:
       Operations::handleTransfer();
       break;
     }
@@ -39,13 +37,21 @@ void operation() {
 
 int main(int argc, char* argv[]) {
   bool exit = false;
-
+  
   while(!exit) {
     std::string number, pin;
+
     std::cout << "Please input your card number: ";
-    std::cin >> number;
+    if(!IO::inputNumber(number, true, true, 16)) {
+      std::cout << "Invalid card number." << std::endl;
+      continue;
+    }
+
     std::cout << "Please input your PIN: ";
-    std::cin >> pin;
+    if(!IO::inputNumber(pin, true, true, 5)) {
+      std::cout << "Invalid pin." << std:: endl;
+      continue;
+    }
 
     if(Login::login(number, pin)) {
       std::cout << std::endl;
@@ -54,6 +60,5 @@ int main(int argc, char* argv[]) {
       Login::logout();
     }
   }
-
   return 0;
 }
