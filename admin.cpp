@@ -5,6 +5,32 @@
 #include "login.h"
 #include "operations.h"
 
+void Admin::handle() {
+  bool select = true;
+  while(select) {
+    switch(IO::prompt(IO::OPTIONS_ADMIN)) {
+    case IO::OPTIONS_ADMIN_LOGOUT:
+      select = false;
+      break;
+    case IO::OPTIONS_ADMIN_SUB:
+      break;
+    case IO::OPTIONS_ADMIN_ADD:
+      break;
+    case IO::OPTIONS_ADMIN_BALANCE:
+      Operations::printBalance();
+      break;
+    case IO::OPTIONS_ADMIN_OPERATIONS:
+      Admin::handleOperations();
+      break;
+    default:
+      std::cout << "Invalid option selected." << std::endl;
+      break;
+    }
+    std::cout << std::endl;
+  }
+}
+
+
 void Admin::handleOperations() {
   std::string number;
 

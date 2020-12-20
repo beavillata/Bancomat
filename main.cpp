@@ -13,31 +13,6 @@
 //Ritirare denaro ed assegni versati:
 // - Aggiunta e ritiro i soldi da account admin
 
-void admin() {
-  bool select = true;
-  while(select) {
-    switch(IO::prompt(IO::OPTIONS_ADMIN)) {
-    case IO::OPTIONS_ADMIN_LOGOUT:
-      select = false;
-      break;
-    case IO::OPTIONS_ADMIN_SUB:
-      break;
-    case IO::OPTIONS_ADMIN_ADD:
-      break;
-    case IO::OPTIONS_ADMIN_BALANCE:
-      Operations::printBalance();
-      break;
-    case IO::OPTIONS_ADMIN_OPERATIONS:
-      Admin::handleOperations();
-      break;
-    default:
-      std::cout << "Invalid option selected." << std::endl;
-      break;
-    }
-    std::cout << std::endl;
-  }
-}
-
 int main(int argc, char* argv[]) {
   bool exit = false;
   std::cout << std::setprecision(2) << std::fixed;
@@ -59,7 +34,7 @@ int main(int argc, char* argv[]) {
 
     if(Login::login(number, pin)) {
       std::cout << std::endl;
-      if(Login::user()->isAdmin()) admin();
+      if(Login::user()->isAdmin()) Admin::handle();
       else Operations::handle();
       std::cout << "Logging out..." << std::endl << std::endl;
       Login::logout();

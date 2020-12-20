@@ -4,6 +4,7 @@
 class Admin {
 public:
   static void handleOperations();
+  static void handle();
 };
 
 #endif
