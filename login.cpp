@@ -7,13 +7,13 @@
 bool Login::login(std::string number, std::string pin) {
   logout(); // First, logout if already logged in
   // Look for the card number in the db
-  std::vector<int> match = Database::credentials->col(1)->has(&number, 1);
+  std::vector<int> match = IO::credentials->getCol(1)->has(&number, 1);
   int found = match[0];
   if(found != -1) { // We have a match
-    CSVRow* row = Database::credentials->row(found);
-    if(row->cell(2)->sget() == pin) {
+    CSVRow* row = IO::credentials->getRow(found);
+    if(row->getCell(2)->sget() == pin) {
       std::cout << "Matching credentials. User logged in." << std::endl;
-      int id = row->cell(0)->iget();
+      int id = row->getCell(0)->iget();
       current = new User(id);
       return true;
     }

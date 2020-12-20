@@ -5,9 +5,9 @@ class Operations {
 public:
   static void printBalance();
   static void printMovements();
-  static void initWithdraw();
-  static void initDeposit();
-  static void initTransfer();
+  static void handleWithdraw();
+  static void handleDeposit();
+  static void handleTransfer();
 
 private:
   static void addMovement(std::string, double, std::string, int);

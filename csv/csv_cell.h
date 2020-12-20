@@ -10,7 +10,7 @@ public:
   virtual void stream(std::ostream&) const {};
   virtual void* get() { return NULL; };
   virtual void set(void*) {};
-  virtual bool is(void*) { return false; };
+  virtual bool is(void*) const { return false; };
 
   int iget();
   double dget();
@@ -35,7 +35,7 @@ public:
   void set(void* ptr) override {
     data = *(static_cast<T*>(ptr));
   };
-  bool is(void* ptr) override {
+  bool is(void* ptr) const override {
     return (data == *(static_cast<T*>(ptr)));
   };
 

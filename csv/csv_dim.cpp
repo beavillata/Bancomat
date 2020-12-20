@@ -2,31 +2,32 @@
 
 #include "csv_dim.h"
 
-void CSVDimension::append(CSVCell* cell) {
+CSVDimension* CSVDimension::append(CSVCell* cell) {
   cellsVector.push_back(cell);
+  return this;
 }
 
 void CSVDimension::clear() {
   cellsVector.clear();
 }
 
-CSVCell* CSVDimension::cell(int index) {
+CSVCell* CSVDimension::getCell(const int index) const {
   return cellsVector[index];
 }
 
-int CSVDimension::size() {
+int CSVDimension::getSize() const {
   return cellsVector.size();
 }
 
-std::vector<CSVCell*> CSVDimension::cells() {
+std::vector<CSVCell*> CSVDimension::getCells() const {
   return cellsVector;
 }
 
-char CSVCol::type() {
+char CSVCol::getType() const {
   return cellType;
 }
 
-std::vector<int> CSVCol::has(void* target, int limit) {
+std::vector<int> CSVCol::has(void* target, const int limit) const {
   std::vector<int> match;
   int i = 0;
   for(CSVCell* cell: cellsVector) {

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <climits>
 
+#include "io.h"
 #include "login.h"
 #include "operations.h"
 
@@ -9,12 +10,9 @@
 //controllare caratteri numero carta e lunghezza
 //idem pin
 
-const std::vector<std::string> mainOptions = {"Logout",
-  "Balance", "Movements", "Withdraw", "Deposit", "Transfer"};
-
 void operation() {
   int selected;
-  while(User::prompt(mainOptions, &selected)) {
+  while(IO::prompt(IO::OPTIONS_MAIN, &selected)) {
     std::cout << std::endl;
     switch(selected) {
     case 0:
@@ -26,13 +24,13 @@ void operation() {
       Operations::printMovements();
       break;
     case 3:
-      Operations::initWithdraw();
+      Operations::handleWithdraw();
       break;
     case 4:
-      Operations::initDeposit();
+      Operations::handleDeposit();
       break;
     case 5:
-      Operations::initTransfer();
+      Operations::handleTransfer();
       break;
     }
     std::cout << std::endl;
@@ -52,10 +50,9 @@ int main(int argc, char* argv[]) {
     if(Login::login(number, pin)) {
       std::cout << std::endl;
       operation();
+      std::cout << "Logging out..." << std::endl << std::endl;
+      Login::logout();
     }
-
-    std::cout << "Logging out..." << std::endl;
-    Login::logout();
   }
 
   return 0;

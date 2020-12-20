@@ -1,7 +1,7 @@
 #ifndef USER_H
 #define USER_H
 
-#include "database.h"
+#include "io.h"
 
 class User {
 
@@ -16,11 +16,8 @@ public:
 
   int getID();
 
-  static bool prompt(std::vector<std::string>, int*);
-
 private:
   int id;
-
 };
 
 #endif

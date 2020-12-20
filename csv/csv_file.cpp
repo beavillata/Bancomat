@@ -13,47 +13,53 @@ CSVFile::~CSVFile() {
   clear();
 }
 
-void CSVFile::append(CSVRow *row) {
-  cellsVector.push_back(row->cells());
+CSVFile* CSVFile::append(const CSVRow *row) {
+  cellsVector.push_back(row->getCells());
   n++;
   rebase();
+
+  return this;
 }
 
-void CSVFile::insert(CSVRow *row, const int after) {
-  cellsVector.insert(cellsVector.begin() + after, row->cells());
+CSVFile* CSVFile::insert(const CSVRow *row, const int after) {
+  cellsVector.insert(cellsVector.begin() + after, row->getCells());
   n++;
   rebase();
+
+  return this;
 }
 
-void CSVFile::remove(const int index) {
+CSVFile* CSVFile::remove(const int index) {
   cellsVector.erase(cellsVector.begin() + index);
   n--;
   rebase();
+
+  return this;
 }
 
 // ==================== GETTERS ==================== //
 
-CSVCell* CSVFile::cell(const int col, const int row) {
+CSVCell* CSVFile::getCell(const int col, const int row) const {
   return cellsVector[row][col];
 }
 
 // Get all rows
-std::vector<CSVRow*> CSVFile::rows() {
+std::vector<CSVRow*> CSVFile::getRows() const {
   return rowsVector;
 }
 
 // Get i-th row
-CSVRow* CSVFile::row(const int i) {
+CSVRow* CSVFile::getRow(const int i) const {
   return rowsVector[i];
 }
 
 // Get all cols
-std::vector<CSVCol*> CSVFile::cols() {
+std::vector<CSVCol*> CSVFile::getCols() const {
   return colsVector;
 }
 
 // Get i-th col
-CSVCol* CSVFile::col(const int i) {
+CSVCol* CSVFile::getCol(const int i) const {
   return colsVector[i];
 }
 
@@ -65,7 +71,7 @@ void CSVFile::save() {
   for(int i = -1; i < n; i++) {
     for(int j = 0; j < m; j++) {
       if(i == -1) {
-        file << colsVector[j]->type();
+        file << colsVector[j]->getType();
       } else {
         cellsVector[i][j]->stream(file);
       }
@@ -150,7 +156,7 @@ void CSVFile::reload() {
         m++; // Increase column number counter
       } else { // We are parsing actual data
         column = colsVector[j];
-        char type = column->type();
+        char type = column->getType();
         CSVCell* data;
         switch(type) {
         case CELL_TYPE_INT:
@@ -169,7 +175,7 @@ void CSVFile::reload() {
       j++; // j-th column of n-th row parsed
     }
     if(n >= 0) {
-      cellsVector.push_back(row->cells());
+      cellsVector.push_back(row->getCells());
     }
     n++; // One more row parsed, starting over
   }
@@ -187,7 +193,7 @@ void CSVFile::print() {
   }
 }
 
-std::vector<std::string> CSVFile::tokenize(std::string data) {
+std::vector<std::string> CSVFile::tokenize(const std::string data) {
   int current = 0, last = 0;
   std::vector<std::string> tokens;
   std::string separator(1, TOKEN_SEPARATOR);

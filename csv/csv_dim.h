@@ -5,12 +5,12 @@
 
 class CSVDimension {
 public:
-  void append(CSVCell*);
-  int size();
+  CSVDimension* append(CSVCell*);
+  int getSize() const;
   void clear();
-  
-  CSVCell* cell(int);
-  std::vector<CSVCell*> cells();
+
+  CSVCell* getCell(const int) const;
+  std::vector<CSVCell*> getCells() const;
 
 protected:
   std::vector<CSVCell*> cellsVector;
@@ -24,8 +24,8 @@ class CSVCol: public CSVDimension {
 public:
   CSVCol(const char ext)
     : cellType(ext) {};
-  char type();
-  std::vector<int> has(void*, int);
+  char getType() const;
+  std::vector<int> has(void*, const int) const;
 
 private:
   char cellType;

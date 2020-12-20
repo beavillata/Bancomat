@@ -15,16 +15,16 @@ class CSVFile {
 
     void reload();
 
-    std::vector<CSVRow*> rows();
-    std::vector<CSVCol*> cols();
+    std::vector<CSVRow*> getRows() const;
+    std::vector<CSVCol*> getCols() const;
 
-    CSVRow* row(const int);
-    CSVCol* col(const int);
-    CSVCell* cell(const int, const int);
+    CSVRow* getRow(const int) const;
+    CSVCol* getCol(const int) const;
+    CSVCell* getCell(const int, const int) const;
 
-    void append(CSVRow*);
-    void insert(CSVRow*, const int);
-    void remove(int index);
+    CSVFile* append(const CSVRow*);
+    CSVFile* insert(const CSVRow*, const int);
+    CSVFile* remove(const int);
 
     void rebase();
     void clear();

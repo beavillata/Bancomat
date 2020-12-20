@@ -8,20 +8,14 @@
 #include "login.h"
 #include "csv/csv_file.h"
 
-const std::string TO_SELF("SELF"),
-  MOVEMENT_DEPOSIT_CASH("CASH DEPOSIT"),
-  MOVEMENT_DEPOSIT_CHEQUE("CHEQUE DEPOSIT"),
-  MOVEMENT_WITHDRAW("WITHDRAW"),
-  MOVEMENTS_TRANSFER("TRANSFER");
-
 void Operations::printBalance() {
   double balance = Login::user()->getBalance();
-  std::cout << "Your balance is: £" << balance << std::endl;
+  std::cout << "Your balance is: €" << balance << std::endl;
 }
 
 void Operations::printMovements() {
   int number = Login::user()->getID();
-  std::vector<int> match = Database::movements->col(0)->has(&number, -1);
+  std::vector<int> match = IO::movements->getCol(0)->has(&number, -1);
 
   if(match[0] == -1) {
     std::cout << "No movements found for this user." << std::endl;
@@ -34,12 +28,12 @@ void Operations::printMovements() {
   double amount;
 
   for(int i: match) {
-    CSVRow* row = Database::movements->row(i);
+    CSVRow* row = IO::movements->getRow(i);
 
-    to = row->cell(1)->sget();
-    amount = row->cell(2)->dget();
-    date = row->cell(3)->sget();
-    type = row->cell(4)->sget();
+    to = row->getCell(1)->sget();
+    amount = row->getCell(2)->dget();
+    date = row->getCell(3)->sget();
+    type = row->getCell(4)->sget();
 
     std::cout << std::setw(13) << to << std::setw(6) << amount << std::setw(20) << date << std::setw(10) << type << std::endl;
   }
@@ -51,20 +45,20 @@ void Operations::addMovement(std::string to,
 
   CSVRow* operation = new CSVRow();
 
-  operation->append(new CSVData<int>(id));
-  operation->append(new CSVData<std::string>(to));
-  operation->append(new CSVData<double>(amount));
-  operation->append(new CSVData<std::string>(getDate()));
-  operation->append(new CSVData<std::string>(type));
+  operation->append(new CSVData<int>(id))
+    ->append(new CSVData<std::string>(to))
+    ->append(new CSVData<double>(amount))
+    ->append(new CSVData<std::string>(getDate()))
+    ->append(new CSVData<std::string>(type));
 
-  Database::movements->append(operation);
-  Database::movements->save();
+  IO::movements->append(operation);
+  IO::movements->save();
 }
 
-void Operations::initWithdraw() {
+void Operations::handleWithdraw() {
   double initial = Login::user()->getBalance();
 
-  std::cout << "Input withdrawal amount: " << std::endl;
+  std::cout << "Input withdrawal amount: ";
   double amount;
   std::cin >> amount;
 
@@ -77,38 +71,33 @@ void Operations::initWithdraw() {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
   } else {
-    addMovement(TO_SELF, -amount, MOVEMENT_WITHDRAW);
+    addMovement(IO::TO_SELF, -amount, IO::MOVEMENT_WITHDRAW);
     Login::user()->setBalance(initial - amount);
 
     printBalance();
   }
 }
 
-const std::vector<std::string> depositOptions = {"Cancel",
-  "Cash deposit", "Cheque deposit"};
-
-void Operations::initDeposit() {
+void Operations::handleDeposit() {
   double initial = Login::user()->getBalance();
-
   std::string type;
-
   int option;
-  User::prompt(depositOptions, &option);
+  IO::prompt(IO::OPTIONS_DEPOSIT, &option);
   switch(option) {
   case 0:
     return;
   case 1:
-    type = MOVEMENT_DEPOSIT_CASH;
+    type = IO::MOVEMENT_DEPOSIT_CASH;
     break;
   case 2:
-    std::cout << "Input cheque number: " << std::endl;
+    std::cout << "Input cheque number: ";
     std::string cheque;
     std::cin >> cheque;
-    type = MOVEMENT_DEPOSIT_CHEQUE + "@" + cheque;
+    type = IO::MOVEMENT_DEPOSIT_CHEQUE + "@" + cheque;
     break;
   }
 
-  std::cout << "Input deposit amount: " << std::endl;
+  std::cout << "Input deposit amount: ";
   double amount;
   std::cin >> amount;
 
@@ -117,16 +106,16 @@ void Operations::initDeposit() {
     return;
   }
 
-  addMovement(TO_SELF, amount, type);
+  addMovement(IO::TO_SELF, amount, type);
   Login::user()->setBalance(initial + amount);
 
   printBalance();
 }
 
-void Operations::initTransfer(){
+void Operations::handleTransfer() {
   double initial = Login::user()->getBalance();
 
-  std::cout << "Input beneficiary's card number: " << std::endl;
+  std::cout << "Input beneficiary's card number: ";
   std::string beneficiary;
   std::cin >> beneficiary;
 
@@ -143,45 +132,44 @@ void Operations::initTransfer(){
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
   } else {
-    std::vector<int> match = Database::credentials->
-      col(1)->has(&beneficiary, 1);
+    std::vector<int> match = IO::credentials->getCol(1)->has(&beneficiary, 1);
 
     if(match[0] != -1) {
-      CSVRow* row = Database::credentials->row(match[0]);
-      int id = row->cell(0)->iget();
+      CSVRow* row = IO::credentials->getRow(match[0]);
+      int id = row->getCell(0)->iget();
 
       if(id == Login::user()->getID()) {
         std::cout << "Cannot transfer money to yourself." << std::endl;
         return;
       }
 
-      addMovement(beneficiary, -amount, MOVEMENTS_TRANSFER);
+      addMovement(beneficiary, -amount, IO::MOVEMENT_TRANSFER);
       Login::user()->setBalance(initial - amount);
 
-      match = Database::accounts->col(0)->has(&id, 1);
-      row = Database::accounts->row(match[0]);
-      initial = row->cell(1)->dget();
+      match = IO::accounts->getCol(0)->has(&id, 1);
+      row = IO::accounts->getRow(match[0]);
+      initial = row->getCell(1)->dget();
 
-      Database::accounts->cell(1, id)->dset(initial + amount);
-      Database::accounts->save();
+      IO::accounts->getCell(1, id)->dset(initial + amount);
+      IO::accounts->save();
 
-      addMovement(TO_SELF, amount, MOVEMENTS_TRANSFER, id);
+      addMovement(IO::TO_SELF, amount, IO::MOVEMENT_TRANSFER, id);
       printBalance();
     } else {
       std::cout << "External bank name: ";
       std::string bank;
       std::cin >> bank;
 
-      CSVRow* external = new CSVRow();
+      CSVRow* transfer = new CSVRow();
 
-      external->append(new CSVData<int>(Login::user()->getID()));
-      external->append(new CSVData<std::string>(beneficiary));
-      external->append(new CSVData<double>(amount));
-      external->append(new CSVData<std::string>(bank));
-      external->append(new CSVData<std::string>(getDate()));
+      transfer->append(new CSVData<int>(Login::user()->getID()))
+        ->append(new CSVData<std::string>(beneficiary))
+        ->append(new CSVData<double>(amount))
+        ->append(new CSVData<std::string>(bank))
+        ->append(new CSVData<std::string>(getDate()));
 
-      Database::external->append(external);
-      Database::external->save();
+      IO::external->append(transfer);
+      IO::external->save();
 
       std::cout << "Transaction has to be approved." << std::endl;
     }
@@ -191,7 +179,7 @@ void Operations::initTransfer(){
 std::string Operations::getDate() {
       time_t timer = time(NULL);
       char datec[26];
-      strftime(datec, 26, "%Y/%m/%d-%H:%M:%S", localtime(&timer));
+      strftime(datec, 26, "%Y/%m/%d %H:%M:%S", localtime(&timer));
 
       std::string date(datec);
       return date;
