@@ -4,24 +4,28 @@
 #include "user.h"
 
 void User::setBalance(double balance) {
-  IO::accounts->getCell(1, id)->dset(balance);
+  IO::accounts->getCell(id, 1)->dset(balance);
   IO::accounts->save();
 }
 
 std::string User::getCardNumber() {
-  return IO::credentials->getCell(1, id)->sget();
+  return IO::credentials->getCell(id, 1)->sget();
 }
 
 std::string User::getPin() {
-  return IO::credentials->getCell(2, id)->sget();
+  return IO::credentials->getCell(id, 2)->sget();
 }
 
 double User::getBalance() {
-  return IO::accounts->getCell(1, id)->dget();
+  return IO::accounts->getCell(id, 1)->dget();
 }
 
 int User::getID() {
   return id;
+}
+
+bool User::isAdmin() {
+  return admin;
 }
 
 /* ====================================================

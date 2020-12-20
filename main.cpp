@@ -3,28 +3,32 @@
 
 #include "login.h"
 #include "operations.h"
+#include "admin.h"
 
-void operation() {
+//Intervenire in caso di guasti: (Controllo accesso admin)
+// - Cancellare righe
+// - Aggiungere righe
+//Extra: creare account
+
+//Ritirare denaro ed assegni versati:
+// - Aggiunta e ritiro i soldi da account admin
+
+void admin() {
   bool select = true;
   while(select) {
-    switch(IO::prompt(IO::OPTIONS_MAIN)) {
-    case IO::OPTIONS_MAIN_LOGOUT:
+    switch(IO::prompt(IO::OPTIONS_ADMIN)) {
+    case IO::OPTIONS_ADMIN_LOGOUT:
       select = false;
       break;
-    case IO::OPTIONS_MAIN_BALANCE:
+    case IO::OPTIONS_ADMIN_SUB:
+      break;
+    case IO::OPTIONS_ADMIN_ADD:
+      break;
+    case IO::OPTIONS_ADMIN_BALANCE:
       Operations::printBalance();
       break;
-    case IO::OPTIONS_MAIN_MOVEMENTS:
-      Operations::printMovements();
-      break;
-    case IO::OPTIONS_MAIN_WITHDRAWAL:
-      Operations::handleWithdrawal();
-      break;
-    case IO::OPTIONS_MAIN_DEPOSIT:
-      Operations::handleDeposit();
-      break;
-    case IO::OPTIONS_MAIN_TRANSFER:
-      Operations::handleTransfer();
+    case IO::OPTIONS_ADMIN_OPERATIONS:
+      Admin::handleOperations();
       break;
     default:
       std::cout << "Invalid option selected." << std::endl;
@@ -55,7 +59,8 @@ int main(int argc, char* argv[]) {
 
     if(Login::login(number, pin)) {
       std::cout << std::endl;
-      operation();
+      if(Login::user()->isAdmin()) admin();
+      else Operations::handle();
       std::cout << "Logging out..." << std::endl << std::endl;
       Login::logout();
     }

@@ -25,7 +25,7 @@ public:
   static const std::string CURRENCY;
 
   static const std::vector<std::string> OPTIONS_MAIN,
-    OPTIONS_DEPOSIT;
+    OPTIONS_DEPOSIT, OPTIONS_ADMIN;
 
   static inline const int OPTIONS_MAIN_LOGOUT = 0,
     OPTIONS_MAIN_BALANCE = 1,
@@ -37,6 +37,12 @@ public:
   static inline const int OPTIONS_DEPOSIT_CANCEL = 0,
     OPTIONS_DEPOSIT_CASH = 1,
     OPTIONS_DEPOSIT_CHEQUE = 2;
+
+  static inline const int OPTIONS_ADMIN_LOGOUT = 0,
+    OPTIONS_ADMIN_BALANCE = 1,
+    OPTIONS_ADMIN_SUB = 2,
+    OPTIONS_ADMIN_ADD = 3,
+    OPTIONS_ADMIN_OPERATIONS = 4;
 };
 
 #endif

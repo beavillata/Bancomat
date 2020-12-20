@@ -14,13 +14,18 @@ bool Login::login(std::string number, std::string pin) {
     if(row->getCell(2)->sget() == pin) {
       std::cout << "Matching credentials. User logged in." << std::endl;
       int id = row->getCell(0)->iget();
-      current = new User(id);
+      // User with ID = 0 is admin
+      current = new User(id, (id == 0));
       return true;
     }
-    return false;
   }
   std::cout << "Incorrect card number or PIN." << std::endl;
   return false;
+}
+
+void Login::login(int id) {
+  logout(); // First, logout if already logged in
+  current = new User(id, (id == 0));
 }
 
 bool Login::logged() {

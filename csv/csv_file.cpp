@@ -44,7 +44,7 @@ CSVFile* CSVFile::remove(const int index) {
 
 // ==================== GETTERS ==================== //
 
-CSVCell* CSVFile::getCell(const int col, const int row) const {
+CSVCell* CSVFile::getCell(const int row, const int col) const {
   return cellsVector[row][col];
 }
 

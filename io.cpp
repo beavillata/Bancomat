@@ -26,14 +26,19 @@ const std::vector<std::string> IO::OPTIONS_MAIN = {"Logout",
 const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
   "Cash deposit", "Cheque deposit"};
 
+const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
+  "Balance", "Take cash", "Add cash", "Impersonate"};
+
 int IO::prompt(std::vector<std::string> options) {
   for(int i = 0; i < options.size(); i++) {
     std::cout << std::left << "[" << i << "] " << std::setw(15) << options[i];
     if(i % 3 == 2) std::cout << std::endl;
   }
-  std::cout << "Select option: ";
+  std::cout << std::endl << "Select option: ";
   std::string selected;
-  if(inputNumber(selected, true, true, 1)) return stoi(selected);
+  if(inputNumber(selected, true, true, 1)) {
+    return stoi(selected);
+  }
   else return -1;
 }
 

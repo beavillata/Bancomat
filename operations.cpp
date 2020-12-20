@@ -9,9 +9,40 @@
 #include "login.h"
 #include "csv/csv_file.h"
 
+void Operations::handle() {
+  bool select = true;
+  while(select) {
+    switch(IO::prompt(IO::OPTIONS_MAIN)) {
+    case IO::OPTIONS_MAIN_LOGOUT:
+      select = false;
+      break;
+    case IO::OPTIONS_MAIN_BALANCE:
+      printBalance();
+      break;
+    case IO::OPTIONS_MAIN_MOVEMENTS:
+      printMovements();
+      break;
+    case IO::OPTIONS_MAIN_WITHDRAWAL:
+      handleWithdrawal();
+      break;
+    case IO::OPTIONS_MAIN_DEPOSIT:
+      handleDeposit();
+      break;
+    case IO::OPTIONS_MAIN_TRANSFER:
+      handleTransfer();
+      break;
+    default:
+      std::cout << "Invalid option selected." << std::endl;
+      break;
+    }
+    std::cout << std::endl;
+  }
+}
+
 void Operations::printBalance() {
   double balance = Login::user()->getBalance();
-  std::cout << "Your balance is: " << IO::CURRENCY << " " << balance << std::endl;
+  std::cout << "Your balance is: " << IO::CURRENCY << " " <<
+    balance << std::endl;
 }
 
 void Operations::printMovements() {
@@ -49,19 +80,24 @@ void Operations::handleWithdrawal() {
 
   std::cout << "Input withdrawal amount: ";
   std::string input;
-
   if(!IO::inputNumber(input, true)) {
     std::cout << "Amount must be a positive number." << std::endl;
     return;
   }
 
   double amount = std::ceil(stod(input) * 100.0) / 100.0;
-  if(initial - amount < 0) {
+  User bancomat(0);
+  if((bancomat.getBalance() - amount) < 0) {
+    std::cout << "Amount not available on this ATM." << std::endl;
+    return;
+  } else if(initial - amount < 0) {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
   } else {
     Login::user()->addMovement(IO::TO_SELF, -amount, IO::MOVEMENT_WITHDRAWAL);
     Login::user()->setBalance(initial - amount);
+
+    bancomat.setBalance(bancomat.getBalance() - amount);
 
     std::vector<double> dens{500.0, 200.0, 100.0, 50.0, 20.0, 10.0, 5.0};
     int size = dens.size();
@@ -84,7 +120,7 @@ void Operations::handleWithdrawal() {
 void Operations::handleDeposit() {
   double initial = Login::user()->getBalance();
   std::string type, cheque;
-  bool select = true;
+  bool select = true, cash = true;
   while(select) {
     switch(IO::prompt(IO::OPTIONS_DEPOSIT)) {
     case 0:
@@ -97,6 +133,7 @@ void Operations::handleDeposit() {
       std::cout << "Input cheque number: ";
       // Assume 7-digit code for cheque
       if(IO::inputNumber(cheque, true, true, 7)) {
+        cash = false;
         type = IO::MOVEMENT_DEPOSIT_CHEQUE + " < " + cheque;
       } else {
         std::cout << "Invalid cheque number." << std::endl;
@@ -121,6 +158,9 @@ void Operations::handleDeposit() {
   double amount = std::ceil(stod(input) * 100.0) / 100.0;
   Login::user()->addMovement(IO::TO_SELF, amount, type);
   Login::user()->setBalance(initial + amount);
+
+  User bancomat(0);
+  if(cash) bancomat.setBalance(bancomat.getBalance() + amount);
 
   printBalance();
 }

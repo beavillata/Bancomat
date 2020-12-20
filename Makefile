@@ -2,7 +2,14 @@ CFLAGS = -std=c++17
 
 all: bancomat
 
-bancomat:
-	g++ main.cpp csv/csv_cell.cpp csv/csv_file.cpp csv/csv_dim.cpp login.cpp user.cpp operations.cpp io.cpp $(CFLAGS)
+bancomat: main.o csv.o
+	g++ main.o io.o login.o operations.o user.o csv_cell.o csv_dim.o csv_file.o admin.o $(CFLAGS)
 
-clean: rm -rf *.out
+main.o: main.cpp io.cpp login.cpp operations.cpp user.cpp admin.cpp
+	g++ -c main.cpp io.cpp login.cpp operations.cpp user.cpp admin.cpp $(CFLAGS)
+
+csv.o: csv/csv_cell.cpp csv/csv_dim.cpp csv/csv_file.cpp
+	g++ -c csv/csv_cell.cpp csv/csv_dim.cpp csv/csv_file.cpp $(CFLAGS)
+
+clean:
+	rm -rf *.o

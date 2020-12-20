@@ -8,6 +8,8 @@ public:
   static void handleWithdrawal();
   static void handleDeposit();
   static void handleTransfer();
+
+  static void handle();
 };
 
 #endif
