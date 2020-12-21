@@ -29,7 +29,13 @@ public:
   CSVCol(const char ext)
     : cellType(ext) {};
   char getType() const;
-  std::vector<int> has(void*, const int) const;
+  std::vector<int> has(void*, const int limit = -1,
+    const int options = HAS_EXACT) const;
+
+  static inline const int HAS_EXACT = 0,
+    HAS_BEGIN = 1,
+    HAS_END = 2;
+
 
 private:
   char cellType;

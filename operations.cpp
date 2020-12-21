@@ -48,7 +48,7 @@ void Operations::printBalance() {
 
 void Operations::printMovements() {
   int number = Login::user()->getID();
-  std::vector<int> match = IO::movements->getCol(0)->has(&number, -1);
+  std::vector<int> match = IO::movements->getCol(4)->has(&number);
   if(match[0] == -1) {
     std::cout << "No movements found for this user." << std::endl;
     return;
