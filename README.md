@@ -53,15 +53,15 @@ The user login page gives the following options to the customers:
 0. **Logout**: exit from the user account and go back to the login page;
 1. **Balance**: prints the current user's balance;
 2. **Movements**: prints a table with the movements of the account. It displays:  
-  * Beneficiary: if the movement was a transfer to another user it contains its card number. If it was a withdraw or a deposit it contains "SELF";
-  * Amount: amount of the movement;
-  * Date: displays date and time of the movement;
-  * Type: displays the nature of the movement;
+   * Beneficiary: if the movement was a transfer to another user it contains its card number. If it was a withdraw or a deposit it contains "SELF";
+   * Amount: amount of the movement;
+   * Date: displays date and time of the movement;
+   * Type: displays the nature of the movement;
 3. **Withdraw**: dispenses banknotes and coins for the amount requested by the user;
 4. **Deposit**: it is possible to deposit cheques or cash. If the cheque option is selected the number of it is requested. It is then saved in the database;
 5. **Transfer**: there are two kinds of transfers permitted:
-  * Internal: if the Card Number of the beneficiary is in the database it permits the automatic exchange between two users;
-  * External: it requires the name of the external bank and it has to be approved. For this reason the movement is saved on the external.csv and will then be checked and eventually allowed by the admin.
+   * Internal: if the Card Number of the beneficiary is in the database it permits the automatic exchange between two users;
+   * External: it requires the name of the external bank and it has to be approved. For this reason the movement is saved on the external.csv and will then be checked and eventually allowed by the admin.
 
 
 The admin login has the following options:
