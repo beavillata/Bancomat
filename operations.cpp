@@ -4,6 +4,7 @@
 #include <vector>
 #include <ctime>
 #include <cmath>
+#include <string>
 
 #include "operations.h"
 #include "login.h"
@@ -212,7 +213,7 @@ void Operations::handleTransfer() {
     } else {
       std::cout << "External bank name: ";
       std::string bank;
-      std::cin >> bank;
+      std::getline(std::cin >> std::ws, bank);
 
       CSVRow* transfer = new CSVRow();
 
