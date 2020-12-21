@@ -25,13 +25,13 @@ Program developed to handle an ATM. It is possible to login as a customer to wit
 
 ### Prerequisites
 * [GNU C++ Compiler](https://www3.ntu.edu.sg/home/ehchua/programming/cpp/gcc_make.html)
-* Make (?)
+* Make
 
 ### Installation
 
 Download the repository from the project's page:
 ```
-How to download... working on it
+git clone
 ```
 ### Instructions
 Compile the project from the terminal with:
@@ -46,7 +46,7 @@ make clean
 After the execution of the compiled files
 you will be direct to the login page.
 Here the program will ask the card number and the pin of the user. It will then check if these are in the database and if they are correct.
-The admin is able to login with a special account *(Card Number = 0000000000000000 Pin = 00000)*. This account is flagged by the *ID = 0*, giving a different menù after the authentication.
+The admin is able to login with a special account *(Card Number = 0000000000000000 Pin = 00000)*. This account is flagged by the *ID = 0*, giving a different menu after the authentication.
 
 The user login page gives the following options to the customers:
 
@@ -63,6 +63,7 @@ The user login page gives the following options to the customers:
   - Internal: if the Card Number of the beneficiary is in the database it permits the automatic exchange between two users;
   - External: it requires the name of the external bank and it has to be approved. For this reason the movement is saved on the external.csv and will then be checked and eventually allowed by the admin.
 
+
 The admin login has the following options:
 0. **Logout**: exit from the user account and go back to the login page;
 1. **Balance**: prints the current ATM's balance;
@@ -70,9 +71,7 @@ The admin login has the following options:
 3. **Add Cash**: allows the admin to deposit cash to the ATM;
 4. **Account Management**: the admin is able to enter customer's account by indicating the Card Number in order to fix problems or check movements;
 
-## Deployment
-### Build With
-### Authors
+## Authors
 * [Filippo Miserocchi](https://github.com/hbar-boi) - Database Management
 * [Beatrice Villata](https://github.com/beavillata) - Customer Interface
 * [Lorenzo Occelli](https://github.com/LoryOccy) - Admin Interface
