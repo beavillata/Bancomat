@@ -30,16 +30,18 @@ const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
   "Balance", "Take cash", "Add cash", "Impersonate"};
 
 int IO::prompt(std::vector<std::string> options) {
-  for(int i = 0; i < options.size(); i++) {
+  int size = options.size();
+  for(int i = 0; i < size; i++) {
     std::cout << std::left << "[" << i << "] " << std::setw(15) << options[i];
-    if(i % 3 == 2) std::cout << std::endl;
+    if(i % 3 == 2 && i != size - 1) std::cout << std::endl;
   }
   std::cout << std::endl << "Select option: ";
   std::string selected;
-  if(inputNumber(selected, true, true, 1)) {
-    return stoi(selected);
-  }
-  else return -1;
+  int ret;
+  if(inputNumber(selected, true, true, 1)) ret = stoi(selected);
+  else ret = -1;
+  std::cout << std::endl;
+  return ret;
 }
 
 bool IO::inputNumber(std::string& ref, bool positive,

@@ -36,7 +36,7 @@ void Operations::handle() {
       std::cout << "Invalid option selected." << std::endl;
       break;
     }
-    std::cout << std::endl;
+    if(select) std::cout << std::endl;
   }
 }
 
@@ -176,7 +176,7 @@ void Operations::handleTransfer() {
     return;
   }
 
-  std::cout << "Input transfer amount: " << std::endl;
+  std::cout << "Input transfer amount: ";
   std::string input;
   if(!IO::inputNumber(input, true)) {
     std::cout << "Amount must be a positive number." << std::endl;
