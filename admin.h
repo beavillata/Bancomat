@@ -6,6 +6,7 @@ public:
   static void handleOperations();
   static void handle();
   static void addInSafetyBox();
+  static void subInSafetyBox();
 };
 
 #endif

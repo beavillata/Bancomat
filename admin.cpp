@@ -14,6 +14,7 @@ void Admin::handle() {
       select = false;
       break;
     case IO::OPTIONS_ADMIN_SUB:
+      Admin::subInSafetyBox();
       break;
     case IO::OPTIONS_ADMIN_ADD:
       Admin::addInSafetyBox();
@@ -46,6 +47,26 @@ void Admin::addInSafetyBox() {
   double amount = std::ceil(stod(input) * 100.0) / 100.0;
   Login::user()->setBalance(initial + amount);
 
+  Operations::printBalance();
+}
+
+void Admin::subInSafetyBox() {
+  double initial = Login::user()->getBalance();
+
+  std::cout << "Input withdrawal amount: ";
+  std::string input;
+
+  if(!IO::inputNumber(input, true)) {
+    std::cout << "Amount must be a positive number." << std::endl;
+    return;
+  }
+  double amount = std::ceil(stod(input) * 100.0) / 100.0;
+  if(initial - amount < 0) {
+    std::cout << "Insufficient credit in ATM's safety box. Operation aborted." << std::endl;
+    return;
+  } else {
+    Login::user()->setBalance(initial - amount);
+  }
   Operations::printBalance();
 }
 
