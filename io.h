@@ -27,7 +27,7 @@ public:
   static const std::string CURRENCY;
 
   static const std::vector<std::string> OPTIONS_MAIN,
-    OPTIONS_DEPOSIT, OPTIONS_ADMIN;
+    OPTIONS_DEPOSIT, OPTIONS_ADMIN, OPTIONS_ADMIN_CHECK, OPTIONS_ADMIN_CHEQUE, OPTIONS_ADMIN_TRANSFER;
 
   static inline const int OPTIONS_MAIN_LOGOUT = 0,
     OPTIONS_MAIN_BALANCE = 1,
@@ -44,7 +44,20 @@ public:
     OPTIONS_ADMIN_BALANCE = 1,
     OPTIONS_ADMIN_SUB = 2,
     OPTIONS_ADMIN_ADD = 3,
-    OPTIONS_ADMIN_OPERATIONS = 4;
+    OPTIONS_ADMIN_CHECKS = 4,
+    OPTIONS_ADMIN_OPERATIONS = 5,
+
+  static inline const int
+    OPTIONS_ADMIN_CHECK_CHEQUE = 1,
+    OPTIONS_ADMIN_CHECK_TRANSFER = 2;
+
+  static inline const int
+   ACCEPT_CHEQUE = 1;
+   REFUTE_CHEQUE = 2;
+
+  static inline const int
+    ACCEPT_TRANSFER = 1;
+    REFUTE_TRANSFER = 2;
 };
 
 #endif

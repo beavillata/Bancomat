@@ -12,7 +12,7 @@
 //Extra: creare account
 
 //Ritirare denaro ed assegni versati:
-// - Aggiunta e ritiro i soldi da account admin
+
 
 int main(int argc, char* argv[]) {
   std::ifstream splash("splash.txt");
