@@ -15,7 +15,7 @@ bool Login::login(std::string number, std::string pin) {
       std::cout << "Matching credentials. User logged in." << std::endl;
       int id = row->getCell(0)->iget();
       // User with ID = 0 is admin
-      current = new User(id, (id == 0));
+      current = new User(id, (id == IO::ADMIN_USER_ID));
       return true;
     }
   }
@@ -25,7 +25,7 @@ bool Login::login(std::string number, std::string pin) {
 
 void Login::login(int id) {
   logout(); // First, logout if already logged in
-  current = new User(id, (id == 0));
+  current = new User(id, (id == IO::ADMIN_USER_ID));
 }
 
 bool Login::logged() {

@@ -26,7 +26,7 @@ void Admin::handle() {
       std::cout << "Invalid option selected." << std::endl;
       break;
     }
-    std::cout << std::endl;
+    if(select) std::cout << std::endl;
   }
 }
 
@@ -53,9 +53,9 @@ void Admin::handleOperations() {
     Login::login(id);
     std::cout << std::endl;
     if(!Login::user()->isAdmin()) Operations::handle();
-    else std::cout << "You are already logged in as admin" << std::endl;
+    else std::cout << "You are already logged in as admin." << std::endl;
 
-    Login::login(adminNumber, adminPin);
+    Login::login(IO::ADMIN_USER_ID);
     std::cout << "Logging back as admin..." << std::endl;
   }
 }
