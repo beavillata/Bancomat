@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 
 #include "login.h"
 #include "operations.h"
@@ -14,8 +15,12 @@
 // - Aggiunta e ritiro i soldi da account admin
 
 int main(int argc, char* argv[]) {
+  std::ifstream splash("splash.txt");
+
   bool exit = false;
   std::cout << std::setprecision(2) << std::fixed;
+
+  std::cout << splash.rdbuf();
 
   while(!exit) {
     std::string number, pin;
