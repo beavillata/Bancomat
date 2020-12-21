@@ -27,7 +27,7 @@ const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
   "Cash deposit", "Cheque deposit"};
 
 const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
-  "Balance", "Take cash", "Add cash", "Impersonate"};
+  "Balance", "Take cash", "Add cash", "Account Management"};
 
 int IO::prompt(std::vector<std::string> options) {
   for(int i = 0; i < options.size(); i++) {
