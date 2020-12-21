@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include "admin.h"
 #include "io.h"
@@ -15,6 +16,7 @@ void Admin::handle() {
     case IO::OPTIONS_ADMIN_SUB:
       break;
     case IO::OPTIONS_ADMIN_ADD:
+      Admin::addInSafetyBox();
       break;
     case IO::OPTIONS_ADMIN_BALANCE:
       Operations::printBalance();
@@ -28,6 +30,23 @@ void Admin::handle() {
     }
     std::cout << std::endl;
   }
+}
+
+void Admin::addInSafetyBox() {
+  double initial = Login::user()->getBalance();
+
+  std::cout << "Input deposit amount: ";
+  std::string input;
+
+  if(!IO::inputNumber(input, true)) {
+    std::cout << "Amount must be a positive number." << std::endl;
+    return;
+  }
+
+  double amount = std::ceil(stod(input) * 100.0) / 100.0;
+  Login::user()->setBalance(initial + amount);
+
+  Operations::printBalance();
 }
 
 
