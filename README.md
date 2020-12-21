@@ -65,6 +65,7 @@ The user login page gives the following options to the customers:
 
 
 The admin login has the following options:
+
 0. **Logout**: exit from the user account and go back to the login page;
 1. **Balance**: prints the current ATM's balance;
 2. **Take Cash**: allows the admin to withdraw cash from the ATM;
