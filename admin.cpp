@@ -117,7 +117,7 @@ void Admin::printCheques() {
     return;
   }
 
-  std::cout << std::left << std::setw(25) << "Card number" <<
+  std::cout << std::left << std::setw(15) << "Card number" <<
     std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
     std::left << "Cheque number" << std::endl;
 
@@ -141,7 +141,7 @@ void Admin::printTransfers() {
     std::cout << "No transfer to be checked." << std::endl;
     return;
   }
-  else {
+
   std::cout <<
     std::left << std::setw(25) << " Card number" <<
     std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
@@ -165,7 +165,6 @@ void Admin::printTransfers() {
       current->getCell(3)->sget() <<
       std::endl;
     }
-  }
 }
 
 void Admin::handleCheque() {
