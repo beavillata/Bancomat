@@ -34,7 +34,7 @@ void Admin::handle() {
           Admin::checkCheque();
           break;
         case IO::OPTIONS_ADMIN_CHECK_TRANSFER:
-          Adimn::printTransferToCheck();
+          Admin::printTransferToCheck();
           Admin::checkTransfer();
           break;
         }
@@ -120,8 +120,8 @@ void Admin::handleOperations() {
 }
 // to be fixed with new has version
 void Admin::printChequeToCheck (){
-  std::string key = "DEPOSIT: CHEQUE ";
-  std::vector<int> match = IO::movements->getCol(4)->has(&key, -1);
+  std::string key = "DEPOSIT: CHEQUE";
+  std::vector<int> match = IO::movements->getCol(4)->has(&key, 1, CSVCol::HAS_END);
   if(match[0] == -1) {
     std::cout << "No cheques to be checked." << std::endl;
     return;
@@ -129,7 +129,7 @@ void Admin::printChequeToCheck (){
 
   std::cout <<
     std::left << std::setw(16) << "Number" <<
-    std::left << std::setw(25) << "User number" <<
+    std::left << std::setw(25) << "User ID" <<
     std::left << std::setw(25) << "Card number" <<
     std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
     std::setw(5) << " " <<
@@ -141,7 +141,7 @@ void Admin::printChequeToCheck (){
     user = IO::movements->getRow(i)->getCell(0)->iget();
     current = IO::movements->getRow(i);
     std::cout << i <<
-    std::left << std:setw(10) << user;
+    std::left << std::setw(10) << user;
     std::cout <<
       std::left << std::left << std::setw(16) <<
       IO::credentials->getRow(user)->getCell(1)->sget() <<
@@ -156,7 +156,7 @@ void Admin::printChequeToCheck (){
 // to be fixed with new has version
 void Admin::printTransferToCheck (){
   std::string key = "OK";
-  std::vector<int> match = IO::external->getCol(4)->has(&key, -1);
+  std::vector<int> match = IO::external->getCol(3)->has(&key, 1, CSVCol::HAS_END);
   if(match[0] == -1) {
     std::cout << "No transfers to be checked." << std::endl;
     return;
@@ -164,7 +164,7 @@ void Admin::printTransferToCheck (){
 
   std::cout <<
     std::left << std::setw(16) << "Number" <<
-    std::left << std::setw(25) << "User number" <<
+    std::left << std::setw(25) << "User ID" <<
     std::left << std::setw(25) << " Card number" <<
     std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
     std::setw(5) << " " <<
@@ -177,14 +177,14 @@ void Admin::printTransferToCheck (){
     user = IO::external->getRow(i)->getCell(0)->iget();
     current = IO::external->getRow(i);
     std::cout << i <<
-    std::left << std:setw(10) << user;
+    std::left << std::setw(10) << user;
     std::cout <<
       std::left << std::left << std::setw(16) <<
       IO::credentials->getRow(user)->getCell(1)->sget() <<
       std::right << std::setw(15) <<
       current->getCell(2)->dget() << std::setw(5) << " " <<
       std::left << std::setw(25) <<
-      current->getCell(1)->sget() << << std::setw(5) << " " <<
+      current->getCell(1)->sget() << std::setw(5) << " " <<
       std::left << std::setw(25) <<
       current->getCell(3)->sget() <<
       std::endl;
@@ -208,7 +208,7 @@ void Admin::checkCheque() {
         select = false;
         break;
       case 2:
-        std::cout << "The bank has rejected the cheque. The amount will be refund to the bank."
+        std::cout << "The bank has rejected the cheque. The amount will be refund to the bank.";
         type = IO::CHEQUE_REJECTED;
         // devo trovare un modo per selezionare lo user e toglierli i soldi
      }
@@ -234,7 +234,7 @@ void Admin::checkTransfer() {
         select = false;
         break;
       case 2:
-        std::cout << "The bank has rejected the transfer. The amount will be refund to the user."
+        std::cout << "The bank has rejected the transfer. The amount will be refund to the user.";
         type = IO::TRANSFER_REJECTED;
         // devo trovare un modo per selezionare lo user e ridargli i soldi
      }
