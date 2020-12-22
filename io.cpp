@@ -3,14 +3,16 @@
 
 #include "io.h"
 
+const std::string IO::XOR_KEY("MOMENTOANGOLARE");
+
 std::unique_ptr<CSVFile>
-  IO::credentials{new CSVFile("persistent/credentials.csv")};
+  IO::credentials{new CSVFile("persistent/credentials.dat", XOR_KEY)};
 std::unique_ptr<CSVFile>
-  IO::accounts{new CSVFile("persistent/accounts.csv")};
+  IO::accounts{new CSVFile("persistent/accounts.dat", XOR_KEY)};
 std::unique_ptr<CSVFile>
-  IO::movements{new CSVFile("persistent/movements.csv")};
+  IO::movements{new CSVFile("persistent/movements.dat", XOR_KEY)};
 std::unique_ptr<CSVFile>
-  IO::external{new CSVFile("persistent/external.csv")};
+  IO::external{new CSVFile("persistent/external.dat", XOR_KEY)};
 
 const std::string IO::TO_SELF("SELF"),
   IO::MOVEMENT_DEPOSIT_CASH("DEPOSIT: CASH"),

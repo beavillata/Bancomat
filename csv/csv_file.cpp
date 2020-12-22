@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "csv_file.h"
 
@@ -57,16 +58,19 @@ CSVCol* CSVFile::getCol(const int j) const {
 // Write database to file
 void CSVFile::save() {
   std::ofstream file(path);
+  std::stringstream ss;
 
   for(CSVRow* row: rowsVector) {
     int j = 0;
     for(CSVCell* cell: row->getCells()) {
-      cell->stream(file);
-      if(j < m - 1) file << TOKEN_SEPARATOR;
+      cell->stream(ss);
+      if(j < m - 1) ss << TOKEN_SEPARATOR;
       j++;
     }
-    file << std::endl;
+    ss << std::endl;
   }
+
+  file << crypto(ss.str());
 
   file.close();
 }
@@ -97,11 +101,14 @@ void CSVFile::reload() {
     std::cout << "Unable to open file. Exiting..." << std::endl;
     exit(1);
   }
-
+  // Extract file content to decrypt...
+  std::stringstream in, out;
+  in << file.rdbuf();
+  out << crypto(in.str());
   std::string line;
   std::string head(1, COMMENT_HEAD);
   // Iterate through all lines in file
-  while(getline(file, line)) {
+  while(getline(out, line)) {
     // Ignore comments
     if(line.substr(0, 1) == head) continue;
     // Instantiate new row to contain this line's data
@@ -125,6 +132,18 @@ void CSVFile::reload() {
   file.close();
 }
 
+std::string CSVFile::crypto(std::string value) {
+  std::string fullKey(key);
+  // XOR cipher works if key is at least as long as message
+  while(fullKey.size() < value.size()) {
+    fullKey += key;
+  }
+  for(std::string::size_type i = 0; i < value.size(); ++i) {
+    value[i] ^= fullKey[i % fullKey.size()];
+  }
+  return value;
+}
+
 std::vector<std::string> CSVFile::tokenize(const std::string data) {
   std::vector<std::string> tokens;
   std::string separator(1, TOKEN_SEPARATOR);
@@ -134,7 +153,6 @@ std::vector<std::string> CSVFile::tokenize(const std::string data) {
     tokens.push_back(data.substr(last, current - last));
     last = current + 1;
   }
-
   tokens.push_back(data.substr(last, std::string::npos));
   return tokens;
 }

@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
 
   std::cout << splash.rdbuf();
 
+  int count = 0;
   while(!exit) {
     std::string number, pin;
 
@@ -44,7 +45,12 @@ int main(int argc, char* argv[]) {
       else Operations::handle();
       std::cout << "Logging out..." << std::endl << std::endl;
       Login::logout();
+      count = 0;
+    } else if(count == 3) {
+      std::cout << "Now go fuck yourself." << std::endl;
+      return 0;
     }
+    count++;
   }
   return 0;
 }

@@ -13,6 +13,8 @@ public:
     bool integer = false, int digits = -1);
   static std::string getDate();
 
+  static const std::string XOR_KEY;
+
   static inline const int ADMIN_USER_ID = 0;
 
   static std::unique_ptr<CSVFile> credentials,

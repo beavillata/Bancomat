@@ -8,7 +8,8 @@
 
 class CSVFile {
   public:
-    CSVFile(const std::string file): path(file) { reload(); };
+    CSVFile(const std::string file, const std::string cipher)
+      : path(file), key(cipher) { reload(); };
     ~CSVFile();
 
     // Unused, for now
@@ -30,12 +31,13 @@ class CSVFile {
     void rebase();
     void clear();
     void save();
+    std::string crypto(std::string);
 
   private:
     static inline const char TOKEN_SEPARATOR = ',',
       COMMENT_HEAD = '#';
 
-    std::string path;
+    std::string path, key;
     int n, m;
 
     std::vector<std::string> tokenize(const std::string);
