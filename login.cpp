@@ -1,4 +1,6 @@
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <vector>
 #include <string>
 
@@ -35,6 +37,9 @@ bool Login::logged() {
 void Login::logout() {
   delete current;
   current = NULL;
+  system("clear");
+  std::ifstream splash("splash.txt");
+  std::cout << splash.rdbuf();
 }
 
 User* Login::user() {

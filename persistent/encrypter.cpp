@@ -5,7 +5,7 @@
 int main() {
 
 	std::string key("MOMENTOANGOLARE");
-	std::ifstream in("external.csv");
+	std::ifstream in("external.dat");
 	std::stringstream ss;
 	ss << in.rdbuf();
 	std::string value(ss.str());
@@ -21,7 +21,7 @@ int main() {
 		value[i] ^= fullKey[i % fullKey.size()];
 	}
 
-	std::ofstream out("external.dat");
+	std::ofstream out("external.csv");
 	out << value;
 	out.close();
 
