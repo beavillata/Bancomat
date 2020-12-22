@@ -26,7 +26,9 @@ public:
     CHEQUE_ACCEPTED,
     CHEQUE_REJECTED,
     TRANSFER_ACCEPTED,
-    TRANSFER_REJECTED;
+    TRANSFER_REJECTED,
+    OK,
+    PENDING;
 
   static const std::string CURRENCY;
 

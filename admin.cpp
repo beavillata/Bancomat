@@ -31,11 +31,9 @@ void Admin::handle() {
           break;
         case IO::OPTIONS_ADMIN_CHECK_CHEQUE:
           Admin::printChequeToCheck();
-          Admin::checkCheque();
           break;
         case IO::OPTIONS_ADMIN_CHECK_TRANSFER:
           Admin::printTransferToCheck();
-          Admin::checkTransfer();
           break;
         }
       }
@@ -120,38 +118,47 @@ void Admin::handleOperations() {
 }
 // to be fixed with new has version
 void Admin::printChequeToCheck (){
-  std::string key = "DEPOSIT: CHEQUE";
-  std::vector<int> match = IO::movements->getCol(4)->has(&key, 1, CSVCol::HAS_END);
+  std::string key = IO::PENDING;
+  std::vector<int> match = IO::movements->getCol(5)->has(&key);
   if(match[0] == -1) {
     std::cout << "No cheques to be checked." << std::endl;
     return;
   }
-
-  std::cout <<
-    std::left << std::setw(16) << "Number" <<
-    std::left << std::setw(25) << "User ID" <<
-    std::left << std::setw(25) << "Card number" <<
-    std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
-    std::setw(5) << " " <<
-    std::left << "Cheque number" << std::endl << std::endl;
-
-  CSVRow* current;
-  int user;
-  for(int i: match) {
-    user = IO::movements->getRow(i)->getCell(0)->iget();
-    current = IO::movements->getRow(i);
-    std::cout << i <<
-    std::left << std::setw(10) << user;
+  else{
     std::cout <<
-      std::left << std::left << std::setw(16) <<
-      IO::credentials->getRow(user)->getCell(1)->sget() <<
-      std::right << std::setw(15) <<
-      current->getCell(2)->dget() << std::setw(5) << " " <<
-      std::left << std::setw(25) <<
-      current->getCell(4)->sget() <<
-      std::endl;
+      std::left << std::setw(16) << "Number" <<
+      std::left << std::setw(25) << "User ID" <<
+      std::left << std::setw(25) << "Card number" <<
+      std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
+      std::setw(5) << " " <<
+      std::left << "Cheque number" << std::endl;
+
+    CSVRow* current;
+    int user;
+    int a=0;
+
+
+    for(int i: match) {
+      user = IO::movements->getRow(i)->getCell(0)->iget();
+      current = IO::movements->getRow(i);
+      std::string s = current->getCell(4)->sget();
+      std::string delimiter = "<";
+      std::string token = s.substr(0, s.find(delimiter));
+      s.erase(0,(token.length()+2));
+      std::cout << a << " " <<
+      std::left << std::setw(15) << user;
+      std::cout <<
+        std::left << std::left << std::setw(16) <<
+        IO::credentials->getRow(user)->getCell(1)->sget() <<
+        std::right << std::setw(15) <<
+        current->getCell(2)->dget() << std::setw(5) << " " <<
+        std::left << std::setw(25) <<
+        s << std::endl;
+      a++;
+      }
+      Admin::checkCheque();
   }
-};
+}
 
 // to be fixed with new has version
 void Admin::printTransferToCheck (){
@@ -161,7 +168,7 @@ void Admin::printTransferToCheck (){
     std::cout << "No transfers to be checked." << std::endl;
     return;
   }
-
+  else {
   std::cout <<
     std::left << std::setw(16) << "Number" <<
     std::left << std::setw(25) << "User ID" <<
@@ -188,15 +195,36 @@ void Admin::printTransferToCheck (){
       std::left << std::setw(25) <<
       current->getCell(3)->sget() <<
       std::endl;
+    }
+    Admin::checkTransfer();
   }
-};
+}
 
 void Admin::checkCheque() {
-  int selectnum;
-   std::cout << "Insert the desired cheque's number" << std::endl;
-   std::cin >> selectnum;
 
-   double initial = Login::user()->getBalance();
+  std::string key = IO::PENDING;
+  std::vector<int> match = IO::movements->getCol(5)->has(&key);
+
+  std::string selectnum;
+  std::cout << "Insert the desired cheque's number" << std::endl;
+  if(!IO::inputNumber(selectnum, true, true, 7)) { //falso quando !=7
+    std::cout << "Incorret Cheque number." << std::endl;
+    return;
+  }
+    CSVRow* current;
+
+    for(int i: match){
+      current = IO::movements->getRow(i);
+      std::string s = current->getCell(4)->sget();
+      std::string delimiter = "<";
+      std::string token = s.substr(0, s.find(delimiter));
+      s.erase(0,(token.length()+2));
+      std::cout << s << selectnum << std::endl;
+      if(s == selectnum){
+        std::cout << s << std::endl;
+      }
+    }
+
    std::string type;
    bool select = true;
    while(select){
@@ -205,9 +233,15 @@ void Admin::checkCheque() {
         return;
       case 1:
         type = IO::CHEQUE_ACCEPTED;
+
         select = false;
         break;
       case 2:
+        int id = current->getCell(0)->iget();
+        std::vector<int> index = IO::accounts->getCol(0)->has(&id);
+        double initial = IO::accounts->getCell(index[0], 1)->dget();
+        IO::accounts->getCell(index[0], 1)->dset(initial - current->getCell(2)->dget());
+        IO::accounts->save();
         std::cout << "The bank has rejected the cheque. The amount will be refund to the bank.";
         type = IO::CHEQUE_REJECTED;
         // devo trovare un modo per selezionare lo user e toglierli i soldi
@@ -215,7 +249,7 @@ void Admin::checkCheque() {
    }
  // devo trovare un modo per andare a modificare le cose in movements
 
-};
+}
 
 void Admin::checkTransfer() {
   int selectnum;
@@ -241,4 +275,4 @@ void Admin::checkTransfer() {
    }
  // devo trovare un modo per andare a modificare le cose in movements
 
-};
+}

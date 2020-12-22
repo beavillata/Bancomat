@@ -20,7 +20,9 @@ const std::string IO::TO_SELF("SELF"),
   IO::CHEQUE_ACCEPTED("DEPOSIT : CHEQUE OK"),
   IO::CHEQUE_REJECTED("DEPOSIT : CHEQUE REJECTED"),
   IO::TRANSFER_ACCEPTED("TRANSFER OK"),
-  IO::TRANSFER_REJECTED("TRANSFER REJECTED");
+  IO::TRANSFER_REJECTED("TRANSFER REJECTED"),
+  IO::OK("OK"),
+  IO::PENDING("PENDING");
 
 const std::string IO::CURRENCY("EUR");
 
@@ -60,7 +62,6 @@ int IO::prompt(std::vector<std::string> options) {
 bool IO::inputNumber(std::string& ref, bool positive,
   bool integer, int digits) {
   std::cin >> ref;
-
   // Check that first char is a digit first, to use strtod.
   if(ref.empty() ||
     std::isspace(ref[0]) ||

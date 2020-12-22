@@ -35,7 +35,7 @@ bool User::isAdmin() {
 *  ==================================================== */
 
 void User::addMovement(std::string to,
-  double amount, std::string type) {
+  double amount, std::string type, std::string status) {
 
   CSVRow* operation = new CSVRow();
 
@@ -43,7 +43,8 @@ void User::addMovement(std::string to,
     append(new CSVData<std::string>(to))->
     append(new CSVData<double>(amount))->
     append(new CSVData<std::string>(IO::getDate()))->
-    append(new CSVData<std::string>(type));
+    append(new CSVData<std::string>(type))->
+    append(new CSVData<std::string>(status));
 
   IO::movements->append(operation);
   IO::movements->save();
