@@ -7,6 +7,10 @@ public:
   static void handle();
   static void addInSafetyBox();
   static void subInSafetyBox();
+  static void checkCheque();
+  static void checkTransfer();
+  static void printChequeToCheck();
+  static void printTransferToCheck();
 };
 
 #endif

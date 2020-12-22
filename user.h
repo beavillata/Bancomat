@@ -11,7 +11,7 @@ public:
     admin = false;
   };
 
-  void addMovement(std::string, double, std::string);
+  void addMovement(std::string, double, std::string, std::string);
 
   void setBalance(double);
 

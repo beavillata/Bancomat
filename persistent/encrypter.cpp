@@ -21,7 +21,7 @@ int main() {
 		value[i] ^= fullKey[i % fullKey.size()];
 	}
 	
-	std::ofstream out("movements.csv");
+	std::ofstream out("movements.dat");
 	out << value;
 	out.close();
 	

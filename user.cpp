@@ -35,7 +35,7 @@ bool User::isAdmin() {
 *  ==================================================== */
 
 void User::addMovement(std::string to,
-  double amount, std::string type) {
+  double amount, std::string type, std::string status) {
 
   CSVRow* operation = new CSVRow();
 
@@ -43,7 +43,8 @@ void User::addMovement(std::string to,
     append(new CSVCell(to))->
     append(new CSVCell(amount))->
     append(new CSVCell(IO::getDate()))->
-    append(new CSVCell(type));
+    append(new CSVCell(type))->
+    append(new CSVCell(status));
 
   IO::movements->append(operation);
   IO::movements->save();

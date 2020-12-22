@@ -18,7 +18,13 @@ const std::string IO::TO_SELF("SELF"),
   IO::MOVEMENT_DEPOSIT_CASH("DEPOSIT: CASH"),
   IO::MOVEMENT_DEPOSIT_CHEQUE("DEPOSIT: CHEQUE"),
   IO::MOVEMENT_WITHDRAWAL("WITHDRAWAL"),
-  IO::MOVEMENT_TRANSFER("TRANSFER");
+  IO::MOVEMENT_TRANSFER("TRANSFER"),
+  IO::CHEQUE_ACCEPTED("DEPOSIT : CHEQUE OK"),
+  IO::CHEQUE_REJECTED("DEPOSIT : CHEQUE REJECTED"),
+  IO::TRANSFER_ACCEPTED("TRANSFER OK"),
+  IO::TRANSFER_REJECTED("TRANSFER REJECTED"),
+  IO::OK("OK"),
+  IO::PENDING("PENDING");
 
 const std::string IO::CURRENCY("EUR");
 
@@ -29,7 +35,16 @@ const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
   "Cash deposit", "Cheque deposit"};
 
 const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
-  "Balance", "Take cash", "Add cash", "Account management"};
+  "Balance", "Take cash", "Add cash", "Checks", "Account Management"};
+
+const std::vector<std::string> IO::OPTIONS_ADMIN_CHECK = {"Logout", "Check Cheque",
+    "Check Transfers"};
+
+const std::vector<std::string> IO::OPTIONS_ADMIN_CHEQUE = {"Logout", "Accept Cheque",
+    "Refuse Cheque"};
+
+const std::vector<std::string> IO::OPTIONS_ADMIN_TRANSFER = {"Logout", "Approve Transfer",
+    "Cancel Transfer"};
 
 int IO::prompt(std::vector<std::string> options) {
   int size = options.size();
@@ -50,7 +65,6 @@ int IO::prompt(std::vector<std::string> options) {
 bool IO::inputNumber(std::string& ref, bool positive,
   bool integer, int digits) {
   std::cin >> ref;
-
   // Check that first char is a digit first, to use strtod.
   if(ref.empty() ||
     std::isspace(ref[0]) ||
