@@ -27,18 +27,19 @@ const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
   "Cash deposit", "Cheque deposit"};
 
 const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
-  "Balance", "Take cash", "Add cash", "Account Management"};
+  "Balance", "Take cash", "Add cash", "Account management"};
 
 int IO::prompt(std::vector<std::string> options) {
   int size = options.size();
   for(int i = 0; i < size; i++) {
-    std::cout << std::left << "[" << i << "] " << std::setw(15) << options[i];
+    std::cout << std::left << "[" << i + 1 << "] " <<
+      std::setw(15) << options[i];
     if(i % 3 == 2 && i != size - 1) std::cout << std::endl;
   }
   std::cout << std::endl << "Select option: ";
   std::string selected;
   int ret;
-  if(inputNumber(selected, true, true, 1)) ret = stoi(selected);
+  if(inputNumber(selected, true, true, 1)) ret = stoi(selected) - 1;
   else ret = -1;
   std::cout << std::endl;
   return ret;
@@ -61,7 +62,7 @@ bool IO::inputNumber(std::string& ref, bool positive,
   if(*remainder > 0) return false;
 
   // Do we have a positive number?
-  if(number < 0 && positive) return false;
+  if(number <= 0 && positive) return false;
 
   // Do we have an integer?
   int decimalPosition = ref.find(".");

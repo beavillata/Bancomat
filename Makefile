@@ -2,7 +2,7 @@ CFLAGS = -std=c++17
 
 all: bancomat
 
-bancomat: main.o csv.o
+bancomat: csv.o main.o
 	g++ main.o io.o login.o operations.o user.o csv_cell.o csv_dim.o csv_file.o admin.o $(CFLAGS)
 
 main.o: main.cpp io.cpp login.cpp operations.cpp user.cpp admin.cpp

@@ -8,7 +8,6 @@
 
 #include "operations.h"
 #include "login.h"
-#include "csv/csv_file.h"
 
 void Operations::handle() {
   bool select = true;
@@ -48,7 +47,7 @@ void Operations::printBalance() {
 
 void Operations::printMovements() {
   int number = Login::user()->getID();
-  std::vector<int> match = IO::movements->getCol(4)->has(&number);
+  std::vector<int> match = IO::movements->getCol(0)->has(number);
   if(match[0] == -1) {
     std::cout << "No movements found for this user." << std::endl;
     return;
@@ -146,6 +145,7 @@ void Operations::handleDeposit() {
       std::cout << "Invalid option selected." << std::endl;
       break;
     }
+    if(select) std::cout << std::endl;
   }
 
   std::cout << "Input deposit amount: ";
@@ -188,7 +188,7 @@ void Operations::handleTransfer() {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
   } else {
-    std::vector<int> match = IO::credentials->getCol(1)->has(&beneficiary, 1);
+    std::vector<int> match = IO::credentials->getCol(1)->has(beneficiary, 1);
 
     if(match[0] != -1) {
       CSVRow* row = IO::credentials->getRow(match[0]);
@@ -217,11 +217,11 @@ void Operations::handleTransfer() {
 
       CSVRow* transfer = new CSVRow();
 
-      transfer->append(new CSVData<int>(Login::user()->getID()))->
-        append(new CSVData<std::string>(beneficiary))->
-        append(new CSVData<double>(amount))->
-        append(new CSVData<std::string>(bank))->
-        append(new CSVData<std::string>(IO::getDate()));
+      transfer->append(new CSVCell(Login::user()->getID()))->
+        append(new CSVCell(beneficiary))->
+        append(new CSVCell(amount))->
+        append(new CSVCell(bank))->
+        append(new CSVCell(IO::getDate()));
 
       IO::external->append(transfer);
       IO::external->save();

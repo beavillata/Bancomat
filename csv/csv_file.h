@@ -24,24 +24,21 @@ class CSVFile {
     CSVCell* getCell(const int, const int) const;
 
     CSVFile* append(CSVRow*);
-    CSVFile* insert(const CSVRow*, const int);
+    CSVFile* insert(CSVRow*, const int);
     CSVFile* remove(const int);
 
     void rebase();
     void clear();
     void save();
-    void close();
-    void print();
 
   private:
-    std::string path;
+    static inline const char TOKEN_SEPARATOR = ',',
+      COMMENT_HEAD = '#';
 
+    std::string path;
     int n, m;
 
     std::vector<std::string> tokenize(const std::string);
-    void clearCols();
-    void clearRows();
-    std::vector<std::vector<CSVCell*>> cellsVector;
     std::vector<CSVCol*> colsVector;
     std::vector<CSVRow*> rowsVector;
 };

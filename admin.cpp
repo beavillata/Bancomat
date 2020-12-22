@@ -85,7 +85,7 @@ void Admin::handleOperations() {
 
   Login::logout();
 
-  std::vector<int> match = IO::credentials->getCol(1)->has(&number, 1);
+  std::vector<int> match = IO::credentials->getCol(1)->has(number, 1);
   int found = match[0];
   if(found != -1) {
     int id = IO::credentials->getCell(found, 0)->iget();

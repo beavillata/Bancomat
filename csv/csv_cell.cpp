@@ -1,28 +1,35 @@
 #include "csv_cell.h"
 
-int CSVCell::iget() {
-  int* ptr = static_cast<int*>(get());
-  return *ptr;
+std::string CSVCell::sget() const {
+  return data;
 }
 
-double CSVCell::dget() {
-  double* ptr = static_cast<double*>(get());
-  return *ptr;
+void CSVCell::set(std::string value) {
+  data = value;
 }
 
-std::string CSVCell::sget() {
-  std::string* ptr = static_cast<std::string*>(get());
-  return *ptr;
+bool CSVCell::is(std::string target) const {
+  return (target == data);
 }
 
-void CSVCell::iset(int value) {
-  set(&value);
+bool CSVCell::starts(std::string target) const {
+  int head = target.size();
+  int content = data.size();
+
+  if(head > content) return false;
+
+  return (data.substr(0, head) == target);
 }
 
-void CSVCell::dset(double value) {
-  set(&value);
+bool CSVCell::ends(std::string target) const {
+  int tail = target.size();
+  int content = data.size();
+
+  if(tail > content) return false;
+
+  return (data.substr(content - tail, tail) == target);
 }
 
-void CSVCell::sset(std::string value) {
-  set(&value);
+void CSVCell::stream(std::ostream& out) const {
+  out << data;
 }

@@ -7,11 +7,11 @@
 bool Login::login(std::string number, std::string pin) {
   logout(); // First, logout if already logged in
   // Look for the card number in the db
-  std::vector<int> match = IO::credentials->getCol(1)->has(&number, 1);
+  std::vector<int> match = IO::credentials->getCol(1)->has(number, 1);
   int found = match[0];
   if(found != -1) { // We have a match
     CSVRow* row = IO::credentials->getRow(found);
-    if(row->getCell(2)->sget() == pin) {
+    if(row->getCell(2)->is(pin)) {
       std::cout << "Matching credentials. User logged in." << std::endl;
       int id = row->getCell(0)->iget();
       // User with ID = 0 is admin

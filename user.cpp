@@ -4,7 +4,7 @@
 #include "user.h"
 
 void User::setBalance(double balance) {
-  IO::accounts->getCell(id, 1)->dset(balance);
+  IO::accounts->getCell(id, 1)->set(balance);
   IO::accounts->save();
 }
 
@@ -39,11 +39,11 @@ void User::addMovement(std::string to,
 
   CSVRow* operation = new CSVRow();
 
-  operation->append(new CSVData<int>(id))->
-    append(new CSVData<std::string>(to))->
-    append(new CSVData<double>(amount))->
-    append(new CSVData<std::string>(IO::getDate()))->
-    append(new CSVData<std::string>(type));
+  operation->append(new CSVCell(id))->
+    append(new CSVCell(to))->
+    append(new CSVCell(amount))->
+    append(new CSVCell(IO::getDate()))->
+    append(new CSVCell(type));
 
   IO::movements->append(operation);
   IO::movements->save();

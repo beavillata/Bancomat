@@ -6,39 +6,37 @@
 class CSVDimension {
 public:
   CSVDimension* append(CSVCell*);
-
-  // Unused, for now
-  CSVDimension& operator<<(CSVCell&);
-
-  int getSize() const;
-  void clear();
-
   CSVCell* getCell(const int) const;
   std::vector<CSVCell*> getCells() const;
 
+  int getSize() const;
+
+  void clear();
+  // Unused, for now
+  CSVDimension& operator<<(CSVCell&);
+
 protected:
+  // Has to be accessible from CSVRow and CSVCol
   std::vector<CSVCell*> cellsVector;
-};
-
-class CSVRow: public CSVDimension {
-
 };
 
 class CSVCol: public CSVDimension {
 public:
-  CSVCol(const char ext)
-    : cellType(ext) {};
-  char getType() const;
-  std::vector<int> has(void*, const int limit = -1,
-    const int options = HAS_EXACT) const;
+  std::vector<int> has(std::string, int limit = -1,
+    int options = HAS_EXACT) const;
+  std::vector<int> has(double target, int limit = -1,
+    int options = HAS_EXACT) const { return has(std::to_string(target)); };
+  std::vector<int> has(int target, int limit = -1,
+    int options = HAS_EXACT) const { return has(std::to_string(target)); };
 
   static inline const int HAS_EXACT = 0,
     HAS_BEGIN = 1,
     HAS_END = 2;
+};
 
-
-private:
-  char cellType;
+class CSVRow: public CSVDimension {
+public:
+  ~CSVRow();
 };
 
 #endif

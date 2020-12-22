@@ -6,43 +6,26 @@
 
 class CSVCell {
 public:
-  virtual void stream(std::ostream&) const {};
-  virtual void* get() { return NULL; };
-  virtual void set(void*) {};
-  virtual bool is(void*) const { return false; };
+  CSVCell(std::string content): data(content) {};
+  CSVCell(double content) { data = std::to_string(content); };
+  CSVCell(int content) { data = std::to_string(content); };
 
-  int iget();
-  double dget();
-  std::string sget();
+  std::string sget() const;
+  double dget() const { return stod(sget()); };
+  int iget() const { return stoi(sget()); };
 
-  void iset(int);
-  void dset(double);
-  void sset(std::string);
-};
+  void set(std::string);
+  void set(double value) { data = std::to_string(value); };
+  void set(int value) { data = std::to_string(value); };
 
-template <typename T>
-class CSVData: public CSVCell {
-public:
-  CSVData(const T value): data(value) {};
-  void stream(std::ostream& out) const override {
-    out << data;
-  };
+  bool is(std::string) const;
+  bool starts(std::string) const;
+  bool ends(std::string) const;
 
-  void* get() override {
-    void* ptr = &data;
-    return ptr;
-  };
-
-  void set(void* ptr) override {
-    data = *(static_cast<T*>(ptr));
-  };
-
-  bool is(void* ptr) const override {
-    return (data == *(static_cast<T*>(ptr)));
-  };
+  void stream(std::ostream&) const;
 
 private:
-  T data;
+  std::string data;
 };
 
 #endif
