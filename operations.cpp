@@ -94,7 +94,8 @@ void Operations::handleWithdrawal() {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
   } else {
-    Login::user()->addMovement(IO::TO_SELF, -amount, IO::MOVEMENT_WITHDRAWAL, IO::OK);
+    Login::user()->addMovement(IO::TO_SELF, -amount,
+      IO::MOVEMENT_WITHDRAWAL, IO::MOVEMENT_OK);
     Login::user()->setBalance(initial - amount);
 
     bancomat.setBalance(bancomat.getBalance() - amount);
@@ -127,7 +128,7 @@ void Operations::handleDeposit() {
       return;
     case 1:
       type = IO::MOVEMENT_DEPOSIT_CASH;
-      status = IO::OK;
+      status = IO::MOVEMENT_OK;
       select = false;
       break;
     case 2:
@@ -136,7 +137,7 @@ void Operations::handleDeposit() {
       if(IO::inputNumber(cheque, true, true, 7)) {
         cash = false;
         type = IO::MOVEMENT_DEPOSIT_CHEQUE + " < " + cheque;
-        status = IO::PENDING;
+        status = IO::MOVEMENT_PENDING;
       } else {
         std::cout << "Invalid cheque number." << std::endl;
         return;
@@ -203,12 +204,13 @@ void Operations::handleTransfer() {
 
       User other(id);
 
-      Login::user()->addMovement(beneficiary, -amount, IO::MOVEMENT_TRANSFER,IO::OK);
+      Login::user()->addMovement(beneficiary, -amount,
+        IO::MOVEMENT_TRANSFER, IO::MOVEMENT_OK);
       Login::user()->setBalance(initial - amount);
 
       std::string type = IO::MOVEMENT_TRANSFER + " < " +
         Login::user()->getCardNumber();
-      other.addMovement(IO::TO_SELF, amount, type,IO::OK);
+      other.addMovement(IO::TO_SELF, amount, type, IO::MOVEMENT_OK);
       other.setBalance(other.getBalance() + amount);
 
       printBalance();
@@ -223,7 +225,8 @@ void Operations::handleTransfer() {
         append(new CSVCell(beneficiary))->
         append(new CSVCell(amount))->
         append(new CSVCell(bank))->
-        append(new CSVCell(IO::getDate()));
+        append(new CSVCell(IO::getDate()))->
+        append(new CSVCell(IO::MOVEMENT_PENDING));
 
       IO::external->append(transfer);
       IO::external->save();

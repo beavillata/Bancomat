@@ -15,29 +15,21 @@ void Admin::handle() {
       select = false;
       break;
     case IO::OPTIONS_ADMIN_SUB:
-      Admin::subInSafetyBox();
+      Admin::handleSub();
       break;
     case IO::OPTIONS_ADMIN_ADD:
-      Admin::addInSafetyBox();
+      Admin::handleAdd();
       break;
     case IO::OPTIONS_ADMIN_BALANCE:
       Operations::printBalance();
       break;
-    case IO::OPTIONS_ADMIN_CHECKS: {
-      while(select) {
-        switch(IO::prompt(IO::OPTIONS_ADMIN_CHECK)) {
-        case IO::OPTIONS_ADMIN_LOGOUT:
-          select = false;
-          break;
-        case IO::OPTIONS_ADMIN_CHECK_CHEQUE:
-          Admin::printChequeToCheck();
-          break;
-        case IO::OPTIONS_ADMIN_CHECK_TRANSFER:
-          Admin::printTransferToCheck();
-          break;
-        }
-      }
-    }
+    case IO::OPTIONS_ADMIN_CHEQUE:
+      Admin::printCheques();
+      Admin::handleCheque();
+      break;
+    case IO::OPTIONS_ADMIN_TRANSFER:
+      Admin::printTransfers();
+      Admin::handleTransfer();
       break;
     case IO::OPTIONS_ADMIN_OPERATIONS:
       Admin::handleOperations();
@@ -50,7 +42,7 @@ void Admin::handle() {
   }
 }
 
-void Admin::addInSafetyBox() {
+void Admin::handleAdd() {
   double initial = Login::user()->getBalance();
 
   std::cout << "Input deposit amount: ";
@@ -67,7 +59,7 @@ void Admin::addInSafetyBox() {
   Operations::printBalance();
 }
 
-void Admin::subInSafetyBox() {
+void Admin::handleSub() {
   double initial = Login::user()->getBalance();
 
   std::cout << "Input withdrawal amount: ";
@@ -77,6 +69,7 @@ void Admin::subInSafetyBox() {
     std::cout << "Amount must be a positive number." << std::endl;
     return;
   }
+
   double amount = std::ceil(stod(input) * 100.0) / 100.0;
   if(initial - amount < 0) {
     std::cout << "Insufficient credit in ATM's safety box. Operation aborted." << std::endl;
@@ -116,62 +109,40 @@ void Admin::handleOperations() {
     std::cout << "Logging back as admin..." << std::endl;
   }
 }
-// to be fixed with new has version
-void Admin::printChequeToCheck (){
-  std::string key = IO::PENDING;
-  std::vector<int> match = IO::movements->getCol(5)->has(&key);
+
+void Admin::printCheques() {
+  std::vector<int> match = IO::movements->getCol(5)->has(IO::MOVEMENT_PENDING);
   if(match[0] == -1) {
     std::cout << "No cheques to be checked." << std::endl;
     return;
   }
-  else{
-    std::cout <<
-      std::left << std::setw(16) << "Number" <<
-      std::left << std::setw(25) << "User ID" <<
-      std::left << std::setw(25) << "Card number" <<
-      std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
-      std::setw(5) << " " <<
-      std::left << "Cheque number" << std::endl;
 
-    CSVRow* current;
-    int user;
-    int a=0;
+  std::cout << std::left << std::setw(25) << "Card number" <<
+    std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
+    std::left << "Cheque number" << std::endl;
 
+  for(int i: match) {
+    CSVRow* row = IO::movements->getRow(i);
+    std::string comment = row->getCell(4)->sget();
+    int user = row->getCell(0)->iget();
+    int index = comment.find(" < ");
+    if(index == std::string::npos) continue;
 
-    for(int i: match) {
-      user = IO::movements->getRow(i)->getCell(0)->iget();
-      current = IO::movements->getRow(i);
-      std::string s = current->getCell(4)->sget();
-      std::string delimiter = "<";
-      std::string token = s.substr(0, s.find(delimiter));
-      s.erase(0,(token.length()+2));
-      std::cout << a << " " <<
-      std::left << std::setw(15) << user;
-      std::cout <<
-        std::left << std::left << std::setw(16) <<
-        IO::credentials->getRow(user)->getCell(1)->sget() <<
-        std::right << std::setw(15) <<
-        current->getCell(2)->dget() << std::setw(5) << " " <<
-        std::left << std::setw(25) <<
-        s << std::endl;
-      a++;
-      }
-      Admin::checkCheque();
+    std::cout << std::left << std::left << std::setw(25) <<
+      IO::credentials->getRow(user)->getCell(1)->sget() <<
+      std::right << std::setw(15) << row->getCell(2)->dget() <<
+      std::left << comment.substr(index + 3, std::string::npos) << std::endl;
   }
 }
 
-// to be fixed with new has version
-void Admin::printTransferToCheck (){
-  std::string key = "OK";
-  std::vector<int> match = IO::external->getCol(3)->has(&key, 1, CSVCol::HAS_END);
+void Admin::printTransfers() {
+  std::vector<int> match = IO::external->getCol(5)->has(IO::MOVEMENT_PENDING);
   if(match[0] == -1) {
-    std::cout << "No transfers to be checked." << std::endl;
+    std::cout << "No transfer to be checked." << std::endl;
     return;
   }
   else {
   std::cout <<
-    std::left << std::setw(16) << "Number" <<
-    std::left << std::setw(25) << "User ID" <<
     std::left << std::setw(25) << " Card number" <<
     std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
     std::setw(5) << " " <<
@@ -183,8 +154,6 @@ void Admin::printTransferToCheck (){
   for(int i: match) {
     user = IO::external->getRow(i)->getCell(0)->iget();
     current = IO::external->getRow(i);
-    std::cout << i <<
-    std::left << std::setw(10) << user;
     std::cout <<
       std::left << std::left << std::setw(16) <<
       IO::credentials->getRow(user)->getCell(1)->sget() <<
@@ -196,15 +165,11 @@ void Admin::printTransferToCheck (){
       current->getCell(3)->sget() <<
       std::endl;
     }
-    Admin::checkTransfer();
   }
 }
 
-void Admin::checkCheque() {
-
-  std::string key = IO::PENDING;
-  std::vector<int> match = IO::movements->getCol(5)->has(&key);
-
+void Admin::handleCheque() {
+  std::vector<int> match = IO::movements->getCol(5)->has(IO::MOVEMENT_PENDING);
   std::string selectnum;
   std::cout << "Insert the desired cheque's number" << std::endl;
   if(!IO::inputNumber(selectnum, true, true, 7)) { //falso quando !=7
@@ -228,22 +193,22 @@ void Admin::checkCheque() {
    std::string type;
    bool select = true;
    while(select){
-     switch(IO::prompt(IO::OPTIONS_ADMIN_CHEQUE)) {
+     switch(IO::prompt(IO::OPTIONS_CHEQUE)) {
       case 0:
         return;
       case 1:
-        type = IO::CHEQUE_ACCEPTED;
+        type = IO::MOVEMENT_OK;
 
         select = false;
         break;
       case 2:
         int id = current->getCell(0)->iget();
-        std::vector<int> index = IO::accounts->getCol(0)->has(&id);
+        std::vector<int> index = IO::accounts->getCol(0)->has(id);
         double initial = IO::accounts->getCell(index[0], 1)->dget();
-        IO::accounts->getCell(index[0], 1)->dset(initial - current->getCell(2)->dget());
+        IO::accounts->getCell(index[0], 1)->set(initial - current->getCell(2)->dget());
         IO::accounts->save();
         std::cout << "The bank has rejected the cheque. The amount will be refund to the bank.";
-        type = IO::CHEQUE_REJECTED;
+        type = IO::MOVEMENT_REFUSED;
         // devo trovare un modo per selezionare lo user e toglierli i soldi
      }
    }
@@ -251,28 +216,34 @@ void Admin::checkCheque() {
 
 }
 
-void Admin::checkTransfer() {
+void Admin::handleTransfer() {
+  /*
   int selectnum;
-   std::cout << "Insert the desired cheque's number" << std::endl;
+   std::cout << "Insert the desired transfer number" << std::endl;
    std::cin >> selectnum;
 
    double initial = Login::user()->getBalance();
    std::string type;
    bool select = true;
    while(select){
-     switch(IO::prompt(IO::OPTIONS_ADMIN_TRANSFER)) {
+     switch(IO::prompt(IO::OPTIONS_TRANSFER)) {
       case 0:
         return;
       case 1:
-        type = IO::TRANSFER_ACCEPTED;
+        type = IO::MOVEMENT_OK;
         select = false;
         break;
       case 2:
-        std::cout << "The bank has rejected the transfer. The amount will be refund to the user.";
-        type = IO::TRANSFER_REJECTED;
+      int id = current->getCell(0)->iget();
+      std::vector<int> index = IO::accounts->getCol(0)->has(id);
+      double initial = IO::accounts->getCell(index[0], 1)->dget();
+      IO::accounts->getCell(index[0], 1)->set(current->getCell(2)->dget());
+      IO::accounts->save();
+      std::cout << "The bank has rejected the transfer. The amount will be refund to the user.";
+      type = IO::MOVEMENT_REFUSED;
         // devo trovare un modo per selezionare lo user e ridargli i soldi
      }
-   }
+   }*/
  // devo trovare un modo per andare a modificare le cose in movements
 
 }

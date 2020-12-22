@@ -19,12 +19,9 @@ const std::string IO::TO_SELF("SELF"),
   IO::MOVEMENT_DEPOSIT_CHEQUE("DEPOSIT: CHEQUE"),
   IO::MOVEMENT_WITHDRAWAL("WITHDRAWAL"),
   IO::MOVEMENT_TRANSFER("TRANSFER"),
-  IO::CHEQUE_ACCEPTED("DEPOSIT : CHEQUE OK"),
-  IO::CHEQUE_REJECTED("DEPOSIT : CHEQUE REJECTED"),
-  IO::TRANSFER_ACCEPTED("TRANSFER OK"),
-  IO::TRANSFER_REJECTED("TRANSFER REJECTED"),
-  IO::OK("OK"),
-  IO::PENDING("PENDING");
+  IO::MOVEMENT_OK("OK"),
+  IO::MOVEMENT_PENDING("PENDING"),
+  IO::MOVEMENT_REFUSED("REFUSED");
 
 const std::string IO::CURRENCY("EUR");
 
@@ -35,16 +32,14 @@ const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
   "Cash deposit", "Cheque deposit"};
 
 const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
-  "Balance", "Take cash", "Add cash", "Checks", "Account Management"};
+  "Balance", "Take cash", "Add cash", "Manage cheques",
+  "Manage transfers", "Manage account"};
 
-const std::vector<std::string> IO::OPTIONS_ADMIN_CHECK = {"Logout", "Check Cheque",
-    "Check Transfers"};
+const std::vector<std::string> IO::OPTIONS_CHEQUE = {"Cancel",
+  "Approve cheque", "Refuse cheque"};
 
-const std::vector<std::string> IO::OPTIONS_ADMIN_CHEQUE = {"Logout", "Accept Cheque",
-    "Refuse Cheque"};
-
-const std::vector<std::string> IO::OPTIONS_ADMIN_TRANSFER = {"Logout", "Approve Transfer",
-    "Cancel Transfer"};
+const std::vector<std::string> IO::OPTIONS_TRANSFER = {"Cancel",
+  "Approve transfer", "Refuse transfer"};
 
 int IO::prompt(std::vector<std::string> options) {
   int size = options.size();

@@ -3,14 +3,14 @@
 
 class Admin {
 public:
-  static void handleOperations();
   static void handle();
-  static void addInSafetyBox();
-  static void subInSafetyBox();
-  static void checkCheque();
-  static void checkTransfer();
-  static void printChequeToCheck();
-  static void printTransferToCheck();
+  static void handleOperations();
+  static void handleAdd();
+  static void handleSub();
+  static void handleCheque();
+  static void handleTransfer();
+  static void printCheques();
+  static void printTransfers();
 };
 
 #endif

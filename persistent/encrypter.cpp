@@ -10,7 +10,7 @@ int main() {
 	ss << in.rdbuf();
 	std::string value(ss.str());
 	in.close();
-	
+
 	std::string fullKey(key);
 	// XOR cipher works if key is at least as long as message
 	while(fullKey.size() < value.size()) {
@@ -20,10 +20,10 @@ int main() {
 	for(std::string::size_type i = 0; i < value.size(); ++i) {
 		value[i] ^= fullKey[i % fullKey.size()];
 	}
-	
+
 	std::ofstream out("movements.dat");
 	out << value;
 	out.close();
-	
+
 	return 0;
 }

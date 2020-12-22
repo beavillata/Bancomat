@@ -14,7 +14,6 @@
 
 //Ritirare denaro ed assegni versati:
 
-
 int main(int argc, char* argv[]) {
   std::ifstream splash("splash.txt");
 
