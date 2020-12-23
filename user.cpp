@@ -9,14 +9,17 @@ void User::setBalance(double balance) {
 }
 
 std::string User::getCardNumber() {
-  return IO::credentials->getCell(id, 1)->sget();
+  int index = IO::credentials->getCol(0)->has(id, 1)[0];
+  return IO::credentials->getCell(index, 1)->sget();
 }
 
 std::string User::getPin() {
-  return IO::credentials->getCell(id, 2)->sget();
+  int index = IO::credentials->getCol(0)->has(id, 1)[0];
+  return IO::credentials->getCell(index, 2)->sget();
 }
 
 double User::getBalance() {
+  int index = IO::accounts->getCol(0)->has(id, 1)[0];
   return IO::accounts->getCell(id, 1)->dget();
 }
 
@@ -25,7 +28,7 @@ int User::getID() {
 }
 
 bool User::isAdmin() {
-  return admin;
+  return (id == IO::ADMIN_USER_ID);
 }
 
 /* ====================================================

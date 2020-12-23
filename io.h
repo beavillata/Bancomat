@@ -7,16 +7,12 @@
 
 #include "csv/csv_file.h"
 
-
 class IO {
 public:
   static int prompt(std::vector<std::string>);
   static bool inputNumber(std::string&, bool positive = false,
     bool integer = false, int digits = -1);
-  static int getch();
-  static std::string getchar(const char*, bool show_asterisk=true);
-  static bool inputPin(std::string&, bool positive = false,
-    bool integer = false, int digits = -1);
+  static bool inputPin(std::string&);
   static std::string getDate();
 
   static const std::string XOR_KEY;
@@ -27,6 +23,7 @@ public:
     accounts, movements, external;
 
   static const std::string TO_SELF,
+    COORDINATE_SEPARATOR,
     MOVEMENT_DEPOSIT_CASH,
     MOVEMENT_DEPOSIT_CHEQUE,
     MOVEMENT_WITHDRAWAL,
@@ -70,6 +67,20 @@ public:
   static inline const int OPTIONS_TRANSFER_CANCEL = 0,
     OPTIONS_TRANSFER_ACCEPT = 1,
     OPTIONS_TRANSFER_REFUSE = 2;
+
+  static inline const bool ALIGN_LEFT = true,
+    ALIGN_RIGHT = false;
+
+  struct cell {
+    int width;
+    std::string content;
+    bool align = ALIGN_LEFT;
+  };
+
+  static void printRow(std::vector<cell>, bool);
+
+private:
+  static int getObfuscated();
 };
 
 #endif

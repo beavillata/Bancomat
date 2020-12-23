@@ -6,10 +6,7 @@
 class User {
 
 public:
-  User(int number, bool su): id(number), admin(su) {};
-  User(int number): id(number) {
-    admin = false;
-  };
+  User(int number): id(number) {};
 
   void addMovement(std::string, double, std::string, std::string);
 
@@ -22,8 +19,8 @@ public:
   bool isAdmin();
 
 private:
+  CSVRow* getRow();
   int id;
-  bool admin;
 };
 
 #endif

@@ -8,6 +8,7 @@
 
 #include "operations.h"
 #include "login.h"
+#include "io.h"
 
 void Operations::handle() {
   bool select = true;
@@ -53,25 +54,27 @@ void Operations::printMovements() {
     return;
   }
 
-  std::cout <<
-    std::left << std::setw(16) << "Beneficiary" <<
-    std::right << std::setw(15) << ("Amount (" + IO::CURRENCY + ")") <<
-    std::setw(5) << " " <<
-    std::left << std::setw(25) << "Date" <<
-    std::left << "Type" << std::endl << std::endl;
+  std::vector<IO::cell> printable = {
+    {16, "Beneficiary"},
+    {15, "Amount (" + IO::CURRENCY + ")", IO::ALIGN_RIGHT},
+    {2, " "},
+    {22, "Date"},
+    {25, "Type"},
+    {2, " "},
+    {10, "Status"}
+  };
+  IO::printRow(printable, true);
 
   CSVRow* current;
   for(int i: match) {
     current = IO::movements->getRow(i);
-    std::cout <<
-      std::left << std::left << std::setw(16) <<
-      current->getCell(1)->sget() <<
-      std::right << std::setw(15) <<
-      current->getCell(2)->dget() << std::setw(5) << " " <<
-      std::left << std::setw(25) <<
-      current->getCell(3)->sget() <<
-      std::left <<
-      current->getCell(4)->sget() << std::endl;
+    printable[0].content = current->getCell(1)->sget();
+    printable[1].content = current->getCell(2)->sget();
+    printable[3].content = current->getCell(3)->sget();
+    printable[4].content = current->getCell(4)->sget();
+    printable[6].content = current->getCell(5)->sget();
+
+    IO::printRow(printable, false);
   }
 }
 
@@ -86,7 +89,7 @@ void Operations::handleWithdrawal() {
   }
 
   double amount = std::ceil(stod(input) * 100.0) / 100.0;
-  User bancomat(0);
+  User bancomat(IO::ADMIN_USER_ID);
   if((bancomat.getBalance() - amount) < 0) {
     std::cout << "Amount not available on this ATM." << std::endl;
     return;
@@ -136,7 +139,7 @@ void Operations::handleDeposit() {
       // Assume 7-digit code for cheque
       if(IO::inputNumber(cheque, true, true, 7)) {
         cash = false;
-        type = IO::MOVEMENT_DEPOSIT_CHEQUE + " < " + cheque;
+        type = IO::MOVEMENT_DEPOSIT_CHEQUE + IO::COORDINATE_SEPARATOR + cheque;
         status = IO::MOVEMENT_PENDING;
       } else {
         std::cout << "Invalid cheque number." << std::endl;
@@ -163,8 +166,8 @@ void Operations::handleDeposit() {
   Login::user()->addMovement(IO::TO_SELF, amount, type, status);
   Login::user()->setBalance(initial + amount);
 
-  User bancomat(0);
-  if(cash) bancomat.setBalance(bancomat.getBalance() + amount);
+  User admin(IO::ADMIN_USER_ID);
+  if(cash) admin.setBalance(admin.getBalance() + amount);
 
   printBalance();
 }
@@ -208,7 +211,7 @@ void Operations::handleTransfer() {
         IO::MOVEMENT_TRANSFER, IO::MOVEMENT_OK);
       Login::user()->setBalance(initial - amount);
 
-      std::string type = IO::MOVEMENT_TRANSFER + " < " +
+      std::string type = IO::MOVEMENT_TRANSFER + IO::COORDINATE_SEPARATOR +
         Login::user()->getCardNumber();
       other.addMovement(IO::TO_SELF, amount, type, IO::MOVEMENT_OK);
       other.setBalance(other.getBalance() + amount);

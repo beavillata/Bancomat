@@ -33,8 +33,8 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "Please input your PIN: ";
-    if(!IO::inputPin(pin, true, true, 5)) {
-      std::cout << "Invalid pin." << std:: endl;
+    if(!IO::inputPin(pin)) {
+      std::cout << std::endl << "Invalid pin." << std::endl;
       continue;
     }
 
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
       Login::logout();
       count = 0;
     } else if(count == 3) {
-      std::cout << "Now go fuck yourself." << std::endl;
+      std::cout << "Maximum number of wrong attempts reached." << std::endl;
       return 0;
     }
     count++;

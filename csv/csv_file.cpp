@@ -71,7 +71,6 @@ void CSVFile::save() {
   }
 
   file << crypto(ss.str());
-
   file.close();
 }
 

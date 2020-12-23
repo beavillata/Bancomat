@@ -4,13 +4,15 @@
 class Admin {
 public:
   static void handle();
+
+private:
   static void handleOperations();
   static void handleAdd();
   static void handleSub();
   static void handleCheque();
   static void handleTransfer();
-  static void printCheques();
-  static void printTransfers();
+  static bool printCheques();
+  static bool printTransfers();
 };
 
 #endif
