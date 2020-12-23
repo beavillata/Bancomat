@@ -2,6 +2,12 @@
 #include <climits>
 #include <cstdlib>
 
+#include <termios.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <iostream>
+#include <string>
+
 #include "io.h"
 
 const std::string IO::XOR_KEY("MOMENTOANGOLARE");
@@ -85,6 +91,78 @@ bool IO::inputNumber(std::string& ref, bool positive,
   if(!decimalFound) decimalPosition = ref.size();
   if(digits != -1 && decimalPosition != digits) return false;
 
+  return true;
+}
+
+int getch() {
+    int ch;
+    struct termios t_old, t_new;
+
+    tcgetattr(STDIN_FILENO, &t_old);
+    t_new = t_old;
+    t_new.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &t_new);
+
+    ch = getchar();
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &t_old);
+    return ch;
+}
+
+std::string getpass(const char *prompt, bool show_asterisk=true)
+{
+  const char BACKSPACE=127;
+  const char RETURN=10;
+
+  std::string password;
+  unsigned char ch=0;
+  ch=getch();
+  ch=0;
+  while((ch=getch())!=RETURN)
+    {
+       if(ch==BACKSPACE)
+         {
+            if(password.length()!=0)
+              {
+                 if(show_asterisk)
+                 std::cout <<"\b \b";
+                 password.resize(password.length()-1);
+              }
+         }
+       else
+         {
+             password+=ch;
+             if(show_asterisk)
+                 std::cout <<'*';
+         }
+    }
+  return password;
+}
+
+bool IO::inputPin(std::string& ref, bool positive,
+  bool integer, int digits) {
+
+  ref=getpass(" ",true); // Show asterisks -> if false it doesn't show them
+
+  char* remainder;
+  // Attempt to cast string to double, remainder becomes the position
+  // of the non-number part in the string. If this value is zero all string
+  // is number.
+  double number = strtod(ref.c_str(), &remainder);
+  if(*remainder > 0) return false;
+
+  // Do we have a positive number?
+  if(number <= 0 && positive) return false;
+
+  // Do we have an integer?
+  int decimalPosition = ref.find(".");
+  bool decimalFound = (decimalPosition != std::string::npos);
+  if(integer && decimalFound) return false;
+
+  // Does our number have the right amount of digits?
+  if(!decimalFound) decimalPosition = ref.size();
+  if(digits != -1 && decimalPosition != digits) return false;
+  std::cout << std::endl;
   return true;
 }
 
