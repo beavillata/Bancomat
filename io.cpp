@@ -22,6 +22,7 @@ std::unique_ptr<CSVFile>
   IO::external{new CSVFile("persistent/external.dat", XOR_KEY)};
 
 const std::string IO::TO_SELF("SELF"),
+  IO::COORDINATE_SEPARATOR(" < "),
   IO::MOVEMENT_DEPOSIT_CASH("DEPOSIT: CASH"),
   IO::MOVEMENT_DEPOSIT_CHEQUE("DEPOSIT: CHEQUE"),
   IO::MOVEMENT_WITHDRAWAL("WITHDRAWAL"),
@@ -93,72 +94,64 @@ bool IO::inputNumber(std::string& ref, bool positive,
   return true;
 }
 
-int getch() {
-    int ch;
-    struct termios t_old, t_new;
+int IO::getObfuscated() {
+  int digit;
 
-    tcgetattr(STDIN_FILENO, &t_old);
-    t_new = t_old;
-    t_new.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &t_new);
+  struct termios termOld, termNew;
 
-    ch = getchar();
+  tcgetattr(STDIN_FILENO, &termOld);
 
-    tcsetattr(STDIN_FILENO, TCSANOW, &t_old);
-    return ch;
+  termNew = termOld;
+  termNew.c_lflag &= ~(ICANON | ECHO);
+
+  tcsetattr(STDIN_FILENO, TCSANOW, &termNew);
+  digit = getchar();
+  tcsetattr(STDIN_FILENO, TCSANOW, &termOld);
+
+  return digit;
 }
 
-std::string getpass(const char *prompt, bool show_asterisk=true)
-{
-  const char BACKSPACE=127;
-  const char RETURN=10;
+bool IO::inputPin(std::string& ref) {
+  const char BACKSPACE = 127, RETURN = 10;
 
-  std::string password;
-  unsigned char ch=0;
-  ch=getch();
-  ch=0;
-  while((ch=getch())!=RETURN) {
-       if(ch==BACKSPACE) {
-            if(password.length()!=0) {
-                 if(show_asterisk)
-                 std::cout <<"\b \b";
-                 password.resize(password.length()-1);
-              }
-         }
-       else {
-             password+=ch;
-             if(show_asterisk)
-                 std::cout <<'*';
-         }
+  unsigned char digit = 0;
+  digit = getObfuscated();
+  digit = 0;
+  // Store digits till RETURN pressed
+  while((digit = getObfuscated()) != RETURN) {
+    // Handle backspace
+    if(digit == BACKSPACE) {
+      if(ref.length() != 0) {
+        std::cout <<"\b \b";
+        ref.resize(ref.length() - 1);
+      }
+    } else {
+      ref += digit;
+      std::cout << "*";
     }
-  return password;
-}
-
-bool IO::inputPin(std::string& ref, bool positive,
-  bool integer, int digits) {
-
-  ref=getpass(" ",true); // Show asterisks -> if false it doesn't show them
+  }
 
   char* remainder;
-  // Attempt to cast string to double, remainder becomes the position
-  // of the non-number part in the string. If this value is zero all string
-  // is number.
   double number = strtod(ref.c_str(), &remainder);
-  if(*remainder > 0) return false;
 
-  // Do we have a positive number?
-  if(number <= 0 && positive) return false;
-
-  // Do we have an integer?
   int decimalPosition = ref.find(".");
   bool decimalFound = (decimalPosition != std::string::npos);
-  if(integer && decimalFound) return false;
 
-  // Does our number have the right amount of digits?
-  if(!decimalFound) decimalPosition = ref.size();
-  if(digits != -1 && decimalPosition != digits) return false;
-  std::cout << std::endl;
+  if(*remainder > 0 || number <= 0 ||
+    decimalFound || ref.size() != 5) return false;
+
   return true;
+}
+
+void IO::printRow(std::vector<cell> data, bool header) {
+  for(cell element: data) {
+    if(element.align == IO::ALIGN_LEFT) std::cout << std::left;
+    else std::cout << std::right;
+
+    std::cout << std::setw(element.width) << element.content;
+  }
+  std::cout << std::endl;
+  if(header) std::cout << std::endl;
 }
 
 std::string IO::getDate() {

@@ -30,23 +30,27 @@ int main(int argc, char* argv[]) {
       std::cout << "Invalid card number." << std::endl;
       continue;
     }
+
     int count;
     std::vector<int> match = IO::credentials->getCol(1)->has(number, 1);
     int found = match[0];
-    if(found!=-1){
+
+    if(found != -1) {
       CSVRow* row = IO::credentials->getRow(found);
       count = std::stoi(row->getCell(3)->sget());
       std::cout << count << std::endl;
-      if(count == 3) {}
-      else{
+      if(count == 3) {
+
+      } else {
         std::cout << "Please input your PIN: ";
-        if(!IO::inputPin(pin, true, true, 5)) {
+        if(!IO::inputPin(pin)) {
           std::cout << std::endl;
           std::cout << "Invalid pin." << std:: endl;
           continue;
         }
       }
     }
+
     std::stringstream ss;
 
     if(Login::login(number, pin)) {
