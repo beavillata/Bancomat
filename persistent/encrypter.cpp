@@ -3,6 +3,12 @@
 #include <sstream>
 #include <fstream>
 
+
+//PER COMPILARE: make encryption -> non c'è più bisogno di modificare questi dati!
+//Ho aggiunto il cin quindi dovremmo essere salvi
+//Visto che di default il compilatore sputa fuori un a.out che fa casino con quello del
+//programma principale ho modificato il make -> ora sputa fuori encrypter!
+//PER ESEGUIRE: ./encrypter
 int main() {
 
 	std::string key("MOMENTOANGOLARE");

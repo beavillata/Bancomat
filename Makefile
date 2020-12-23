@@ -11,8 +11,13 @@ main.o: main.cpp io.cpp login.cpp operations.cpp user.cpp admin.cpp
 csv.o: csv/csv_cell.cpp csv/csv_dim.cpp csv/csv_file.cpp
 	g++ -c csv/csv_cell.cpp csv/csv_dim.cpp csv/csv_file.cpp $(CFLAGS)
 
+<<<<<<< Updated upstream
 encryption: persistent/encrypter.cpp
 	g++ persistent/encrypter.cpp
+=======
+encryption: encrypter.cpp
+	g++ -o encrypter encrypter.cpp
+>>>>>>> Stashed changes
 	echo all done!
 
 clean:
