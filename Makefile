@@ -11,8 +11,9 @@ main.o: main.cpp io.cpp login.cpp operations.cpp user.cpp admin.cpp
 csv.o: csv/csv_cell.cpp csv/csv_dim.cpp csv/csv_file.cpp
 	g++ -c csv/csv_cell.cpp csv/csv_dim.cpp csv/csv_file.cpp $(CFLAGS)
 
-encryption: persistent/encrypter.cpp
-	g++ -c persistent/encrypter.cpp
+encryption: encrypter.cpp
+	g++ -c encrypter.cpp
+	echo all done!
 
 clean:
 	rm -rf *.o

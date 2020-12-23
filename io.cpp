@@ -118,19 +118,15 @@ std::string getpass(const char *prompt, bool show_asterisk=true)
   unsigned char ch=0;
   ch=getch();
   ch=0;
-  while((ch=getch())!=RETURN)
-    {
-       if(ch==BACKSPACE)
-         {
-            if(password.length()!=0)
-              {
+  while((ch=getch())!=RETURN) {
+       if(ch==BACKSPACE) {
+            if(password.length()!=0) {
                  if(show_asterisk)
                  std::cout <<"\b \b";
                  password.resize(password.length()-1);
               }
          }
-       else
-         {
+       else {
              password+=ch;
              if(show_asterisk)
                  std::cout <<'*';
