@@ -13,6 +13,10 @@ public:
   static int prompt(std::vector<std::string>);
   static bool inputNumber(std::string&, bool positive = false,
     bool integer = false, int digits = -1);
+  static int getch();
+  static std::string getchar(const char*, bool show_asterisk=true);
+  static bool inputPin(std::string&, bool positive = false,
+    bool integer = false, int digits = -1);
   static std::string getDate();
 
   static const std::string XOR_KEY;

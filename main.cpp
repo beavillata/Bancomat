@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "Please input your PIN: ";
-    if(!IO::inputNumber(pin, true, true, 5)) {
+    if(!IO::inputPin(pin, true, true, 5)) {
       std::cout << "Invalid pin." << std:: endl;
       continue;
     }
