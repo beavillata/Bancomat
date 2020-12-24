@@ -13,6 +13,7 @@ private:
   static void handleTransfer();
   static bool printCheques();
   static bool printTransfers();
+  static void handleAccounts();
 };
 
 #endif

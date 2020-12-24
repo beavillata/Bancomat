@@ -37,8 +37,8 @@ bool Login::logged() {
 void Login::logout() {
   delete current;
   current = NULL;
-  
-  system("clear");
+
+  system("cls||clear"); //to make it work both on windows and unix
   std::ifstream splash("splash.txt");
   std::cout << splash.rdbuf();
 }

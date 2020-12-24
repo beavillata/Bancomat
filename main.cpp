@@ -9,10 +9,7 @@
 #include "admin.h"
 
 //DA AGGIUSTARE:
-//- per qualche motivo quando fai il logout ora esce dal programma (wtf??)
-//- aggiungere funzione admin per riattivare account bloccati (working on it)
-//- rendere portabile il clean
-//- capire
+
 
 int main(int argc, char* argv[]) {
   std::ifstream splash("splash.txt");
@@ -38,7 +35,6 @@ int main(int argc, char* argv[]) {
     if(found != -1) {
       CSVRow* row = IO::credentials->getRow(found);
       count = std::stoi(row->getCell(3)->sget());
-      std::cout << count << std::endl;
       if(count == 3) {
 
       } else {
@@ -54,7 +50,6 @@ int main(int argc, char* argv[]) {
     std::stringstream ss;
 
     if(Login::login(number, pin)) {
-      std::cout << std::endl;
       if(Login::user()->isAdmin()) Admin::handle();
       else Operations::handle();
       std::cout << "Logging out..." << std::endl;
@@ -64,10 +59,10 @@ int main(int argc, char* argv[]) {
       std::string str = ss.str();
       IO::credentials->getCell(found, 3)->set(str);
       IO::credentials->save();
-      return 0;
+      continue;
     } else if(count == 3) {
       std::cout << "Your account has been suspended;" << std::endl;
-      return 0;
+      continue;
     }
     count++;
     ss << count;
