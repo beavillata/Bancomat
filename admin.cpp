@@ -34,14 +34,19 @@ void Admin::handle() {
       if(available) Admin::handleTransfer();
       break;
     }
-    case IO::OPTIONS_ADMIN_OPERATIONS:
+    case IO::OPTIONS_ADMIN_OPERATIONS: {
       Admin::handleOperations();
       break;
     default:
       std::cout << "Invalid option selected." << std::endl;
       break;
     }
+    case IO::OPTIONS_ADMIN_REACTIVATE: {
+      Admin::handleAccounts();
+      break;
+    }
     if(select) std::cout << std::endl;
+  }
   }
 }
 
@@ -260,4 +265,40 @@ void Admin::handleTransfer() {
    }*/
  // devo trovare un modo per andare a modificare le cose in movements
 
+}
+
+void Admin::handleAccounts() {
+  //print all the users with blocked accounts:
+  std::vector<int> cardMatch = IO::credentials->getCol(3)->has("3");
+  std::string user;
+  if(cardMatch[0] == -1) {
+    std::cout << "No suspended accounts." << std::endl;
+  }
+  else{
+    CSVRow* row;
+    std::cout << "Currently suspended accounts: \n" << std::endl;
+    for(int i: cardMatch)
+    {
+      row = IO::credentials->getRow(i);
+      user = row->getCell(1)->sget();
+      std::cout << user << std::endl;
+    }
+    std::cout << "\nDo you want to reactivate a user? " << std::endl;
+    std::cout << "[1] Reactivate    [2] Back" << std::endl;
+    int option;
+    std::cin >> option;
+    if(option == 1) {
+      std::string number;
+      std::cout << "Insert the card number of the user: ";
+      std::cin >> number;
+      std::vector<int> match = IO::credentials->getCol(1)->has(number, 1);
+      int found = match[0];
+      if(found != -1) {
+        CSVRow* row = IO::credentials->getRow(found);
+        IO::credentials->getCell(found, 3)->set("0");
+        IO::credentials->save();
+        std::cout << "User reabilitated." << std::endl;
+      }
+    }
+  }
 }

@@ -41,7 +41,7 @@ const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
 
 const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
   "Balance", "Take cash", "Add cash", "Manage cheques",
-  "Manage transfers", "Manage account"};
+  "Manage transfers", "Manage account", "Reactivate accounts"};
 
 const std::vector<std::string> IO::OPTIONS_CHEQUE = {"Cancel",
   "Approve cheque", "Refuse cheque"};
@@ -97,15 +97,32 @@ bool IO::inputNumber(std::string& ref, bool positive,
 int IO::getObfuscated() {
   int digit;
 
-  struct termios termOld, termNew;
+  struct termios termOld, termNew; //termios -> terminal interface
+  //what we want to do is modify the terminal attributes (ex: interrupting the echoing)
+  //for this we recall the data structure tcgetattr:
 
-  tcgetattr(STDIN_FILENO, &termOld);
-
+  //TCGETATTR(obj, termios) = gets the parameters associated with the object
+  //and stores them in the termios structure
+  tcgetattr(STDIN_FILENO, &termOld); //STDIN_FILENO -> descriptor of input standard file
+  //I must get trace of the changes to the object
   termNew = termOld;
-  termNew.c_lflag &= ~(ICANON | ECHO);
+  //ICANON is responsible to decide if the terminal is operating
+  //in canonical mode (ICANON set) or not (ICANON not set)
 
+  //ECHO: when is set characters are echoed back, if it is clear input is not echoed
+
+  //c_lflag is responsible to control the functions and it is composed using OR
+
+  //I am setting both ICANON and ECHO to clear!
+  termNew.c_lflag &= ~(ICANON | ECHO); //
+
+  //effects on the terminal are not effective until tcsetattr() is called
+  //tcsetattr(object, optional_actions, termios);
+  //the optional_actions element is setted on TCSANOW -> that means that the change will
+  //occurr immediately!
   tcsetattr(STDIN_FILENO, TCSANOW, &termNew);
   digit = getchar();
+  //When I finish I want to restore everything back to normal:
   tcsetattr(STDIN_FILENO, TCSANOW, &termOld);
 
   return digit;
@@ -120,9 +137,12 @@ bool IO::inputPin(std::string& ref) {
   // Store digits till RETURN pressed
   while((digit = getObfuscated()) != RETURN) {
     // Handle backspace
+    //I have to add this because I changed ICANON to noncanonical and it doesn't
+    //evaluate the backspaces anymore when in this mode
     if(digit == BACKSPACE) {
       if(ref.length() != 0) {
-        std::cout <<"\b \b";
+        std::cout <<"\b \b"; //\b moves the cursor back. I have to also add a space after it
+        //to delete the text
         ref.resize(ref.length() - 1);
       }
     } else {
