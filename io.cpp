@@ -95,61 +95,78 @@ bool IO::inputNumber(std::string& ref, bool positive,
 }
 
 int IO::getObfuscated() {
-  int digit;
+  #if defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__) || (__APPLE__)
+    int digit;
 
-  struct termios termOld, termNew; //termios -> terminal interface
-  //what we want to do is modify the terminal attributes (ex: interrupting the echoing)
-  //for this we recall the data structure tcgetattr:
+    struct termios termOld, termNew; //termios -> terminal interface
+    //what we want to do is modify the terminal attributes (ex: interrupting the echoing)
+    //for this we recall the data structure tcgetattr:
 
-  //TCGETATTR(obj, termios) = gets the parameters associated with the object
-  //and stores them in the termios structure
-  tcgetattr(STDIN_FILENO, &termOld); //STDIN_FILENO -> descriptor of input standard file
-  //I must get trace of the changes to the object
-  termNew = termOld;
-  //ICANON is responsible to decide if the terminal is operating
-  //in canonical mode (ICANON set) or not (ICANON not set)
+    //TCGETATTR(obj, termios) = gets the parameters associated with the object
+    //and stores them in the termios structure
+    tcgetattr(STDIN_FILENO, &termOld); //STDIN_FILENO -> descriptor of input standard file
+    //I must get trace of the changes to the object
+    termNew = termOld;
+    //ICANON is responsible to decide if the terminal is operating
+    //in canonical mode (ICANON set) or not (ICANON not set)
 
-  //ECHO: when is set characters are echoed back, if it is clear input is not echoed
+    //ECHO: when is set characters are echoed back, if it is clear input is not echoed
 
-  //c_lflag is responsible to control the functions and it is composed using OR
+    //c_lflag is responsible to control the functions and it is composed using OR
 
-  //I am setting both ICANON and ECHO to clear!
-  termNew.c_lflag &= ~(ICANON | ECHO); //
+    //I am setting both ICANON and ECHO to clear!
+    termNew.c_lflag &= ~(ICANON | ECHO); //
 
-  //effects on the terminal are not effective until tcsetattr() is called
-  //tcsetattr(object, optional_actions, termios);
-  //the optional_actions element is setted on TCSANOW -> that means that the change will
-  //occurr immediately!
-  tcsetattr(STDIN_FILENO, TCSANOW, &termNew);
-  digit = getchar();
-  //When I finish I want to restore everything back to normal:
-  tcsetattr(STDIN_FILENO, TCSANOW, &termOld);
+    //effects on the terminal are not effective until tcsetattr() is called
+    //tcsetattr(object, optional_actions, termios);
+    //the optional_actions element is setted on TCSANOW -> that means that the change will
+    //occurr immediately!
+    tcsetattr(STDIN_FILENO, TCSANOW, &termNew);
+    digit = getchar();
+    //When I finish I want to restore everything back to normal:
+    tcsetattr(STDIN_FILENO, TCSANOW, &termOld);
 
-  return digit;
+    return digit;
+
+  #elif defined _WIN32
+    return 0;
+  #endif
 }
 
 bool IO::inputPin(std::string& ref) {
-  const char BACKSPACE = 127, RETURN = 10;
 
-  unsigned char digit = 0;
-  digit = getObfuscated();
-  digit = 0;
-  // Store digits till RETURN pressed
-  while((digit = getObfuscated()) != RETURN) {
-    // Handle backspace
-    //I have to add this because I changed ICANON to noncanonical and it doesn't
-    //evaluate the backspaces anymore when in this mode
-    if(digit == BACKSPACE) {
-      if(ref.length() != 0) {
-        std::cout <<"\b \b"; //\b moves the cursor back. I have to also add a space after it
-        //to delete the text
-        ref.resize(ref.length() - 1);
-      }
-    } else {
-      ref += digit;
-      std::cout << "*";
+  #if defined _WIN32
+    int i = 0;
+    std::char c;
+    while( (c=getch())!= '\n') {
+        ref[i] = c;
+        printf("*");
+        i++;
     }
-  }
+
+  #elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__) || (__APPLE__)
+    const char BACKSPACE = 127, RETURN = 10;
+
+    unsigned char digit = 0;
+    digit = getObfuscated();
+    digit = 0;
+    // Store digits till RETURN pressed
+    while((digit = getObfuscated()) != RETURN) {
+      // Handle backspace
+      //I have to add this because I changed ICANON to noncanonical and it doesn't
+      //evaluate the backspaces anymore when in this mode
+      if(digit == BACKSPACE) {
+        if(ref.length() != 0) {
+          std::cout <<"\b \b"; //\b moves the cursor back. I have to also add a space after it
+          //to delete the text
+          ref.resize(ref.length() - 1);
+        }
+      } else {
+        ref += digit;
+        std::cout << "*";
+      }
+    }
+  #endif
 
   char* remainder;
   double number = strtod(ref.c_str(), &remainder);
