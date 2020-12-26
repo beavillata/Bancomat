@@ -222,6 +222,10 @@ void Operations::handleTransfer() {
       std::string bank;
       std::getline(std::cin >> std::ws, bank);
 
+      Login::user()->setBalance(initial - amount);
+      Login::user()->addMovement(beneficiary, -amount,
+      IO::MOVEMENT_TRANSFER, IO::MOVEMENT_PENDING);
+
       CSVRow* transfer = new CSVRow();
 
       transfer->append(new CSVCell(Login::user()->getID()))->

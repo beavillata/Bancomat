@@ -278,6 +278,11 @@ void Admin::handleTransfer() {
   row->getCell(5)->set(type);
   IO::external->save();
 
+  std::string beneficiary = row->getCell(1)->sget();
+  std::vector<int> matchmovement = IO::movements->getCol(1)->has(beneficiary);
+  IO::movements->getRow(matchmovement[0])->getCell(5)->set(type);
+  IO::movements->save();
+
 }
 
 void Admin::handleAccounts() {
