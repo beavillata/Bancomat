@@ -236,34 +236,47 @@ void Admin::handleCheque() {
 }
 
 void Admin::handleTransfer() {
-  /*
-  int selectnum;
-   std::cout << "Insert the desired transfer number" << std::endl;
-   std::cin >> selectnum;
+  std::vector<int> match = IO::external->getCol(5)->has(IO::MOVEMENT_PENDING);
 
-   double initial = Login::user()->getBalance();
-   std::string type;
-   bool select = true;
-   while(select){
-     switch(IO::prompt(IO::OPTIONS_TRANSFER)) {
-      case 0:
-        return;
-      case 1:
-        type = IO::MOVEMENT_OK;
-        select = false;
-        break;
-      case 2:
-      int id = current->getCell(0)->iget();
-      std::vector<int> index = IO::accounts->getCol(0)->has(id);
-      double initial = IO::accounts->getCell(index[0], 1)->dget();
-      IO::accounts->getCell(index[0], 1)->set(current->getCell(2)->dget());
-      IO::accounts->save();
-      std::cout << "The bank has rejected the transfer. The amount will be refund to the user.";
+  std::string transaction;
+  std::cout << "Input transaction ID: ";
+  if(!IO::inputNumber(transaction, true, true) ||
+    std::find(match.begin(), match.end(), stoi(transaction)) == match.end()) {
+    std::cout << "Invalid transaction ID." << std::endl;
+    return;
+  }
+  std::cout << std::endl;
+
+  CSVRow* row = IO::external->getRow(stoi(transaction));
+  std::string type;
+  bool select = true;
+  while(select) {
+    switch(IO::prompt(IO::OPTIONS_TRANSFER)) {
+    case 0:
+      return;
+    case 1: {
+      type = IO::MOVEMENT_OK;
+      select = false;
+      break;
+    }
+    case 2: {
       type = IO::MOVEMENT_REFUSED;
-        // devo trovare un modo per selezionare lo user e ridargli i soldi
-     }
-   }*/
- // devo trovare un modo per andare a modificare le cose in movements
+      select = false;
+      User sender(row->getCell(0)->iget());
+      double amount = row->getCell(2)->dget();
+
+      sender.setBalance(sender.getBalance() + amount);
+      std::cout << "Transfer refused. Amount refunded to the user." << std::endl;
+      break;
+    }
+    default:
+      std::cout << "Invalid option selected." << std::endl;
+      break;
+    }
+  }
+
+  row->getCell(5)->set(type);
+  IO::external->save();
 
 }
 
