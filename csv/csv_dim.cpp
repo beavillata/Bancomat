@@ -39,8 +39,15 @@ std::vector<int> CSVCol::has(std::string target, const int limit,
     if(limit != -1 && size >= limit) break;
     i++;
   }
-  if(match.size() == 0) match.push_back(-1);
   return match;
+}
+
+bool CSVCol::first(std::string target, int& dest, const int options) const {
+  std::vector<int> result = has(target, 1, options);
+  if(result.size() == 0) return false;
+
+  dest = result[0];
+  return true;
 }
 
 void CSVDimension::clear() {

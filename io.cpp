@@ -41,7 +41,7 @@ const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
 
 const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
   "Balance", "Take cash", "Add cash", "Manage cheques",
-  "Manage transfers", "Manage account", "Reactivate accounts"};
+  "Manage transfers", "Manage account", "Manage access"};
 
 const std::vector<std::string> IO::OPTIONS_CHEQUE = {"Cancel",
   "Approve cheque", "Refuse cheque"};
@@ -81,7 +81,7 @@ bool IO::inputNumber(std::string& ref, bool positive,
   if(*remainder > 0) return false;
 
   // Do we have a positive number?
-  if(number <= 0 && positive) return false;
+  if(number < 0 && positive) return false;
 
   // Do we have an integer?
   int decimalPosition = ref.find(".");
@@ -95,7 +95,8 @@ bool IO::inputNumber(std::string& ref, bool positive,
 }
 
 int IO::getObfuscated() {
-  #if defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__) || (__APPLE__)
+  #if defined (__LINUX__) || defined(__gnu_linux__) \
+    || defined(__linux__) || (__APPLE__)
     int digit;
 
     struct termios termOld, termNew; //termios -> terminal interface
@@ -129,6 +130,7 @@ int IO::getObfuscated() {
     return digit;
 
   #elif defined _WIN32
+    // If on Windows we don't need any of that
     return 0;
   #endif
 }
@@ -138,13 +140,14 @@ bool IO::inputPin(std::string& ref) {
   #if defined _WIN32
     int i = 0;
     std::char c;
-    while( (c=getch())!= '\n') {
-        ref[i] = c;
-        printf("*");
-        i++;
+    while((c = getch()) != '\n') {
+      ref[i] = c;
+      printf("*");
+      i++;
     }
 
-  #elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__) || (__APPLE__)
+  #elif defined (__LINUX__) || defined(__gnu_linux__) || \
+    defined(__linux__) || (__APPLE__)
     const char BACKSPACE = 127, RETURN = 10;
 
     unsigned char digit = 0;
@@ -198,4 +201,9 @@ std::string IO::getDate() {
 
   std::string date(datec);
   return date;
+}
+
+int IO::getUUID() {
+  srand(time(0));
+  return rand();
 }

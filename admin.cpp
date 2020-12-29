@@ -34,19 +34,17 @@ void Admin::handle() {
       if(available) Admin::handleTransfer();
       break;
     }
-    case IO::OPTIONS_ADMIN_OPERATIONS: {
+    case IO::OPTIONS_ADMIN_OPERATIONS:
       Admin::handleOperations();
+      break;
+    case IO::OPTIONS_ADMIN_REACTIVATE:
+      Admin::handleManage();
       break;
     default:
       std::cout << "Invalid option selected." << std::endl;
       break;
     }
-    case IO::OPTIONS_ADMIN_REACTIVATE: {
-      Admin::handleAccounts();
-      break;
-    }
     if(select) std::cout << std::endl;
-  }
   }
 }
 
@@ -100,12 +98,9 @@ void Admin::handleOperations() {
   std::string adminNumber = Login::user()->getCardNumber();
   std::string adminPin = Login::user()->getPin();
 
-  Login::logout();
-
-  std::vector<int> match = IO::credentials->getCol(1)->has(number, 1);
-  int found = match[0];
-  if(found != -1) {
-    int id = IO::credentials->getCell(found, 0)->iget();
+  int match;
+  if(IO::credentials->getCol(1)->first(number, match)) {
+    int id = IO::credentials->getCell(match, 0)->iget();
 
     Login::login(id);
     std::cout << std::endl;
@@ -114,12 +109,14 @@ void Admin::handleOperations() {
 
     Login::login(IO::ADMIN_USER_ID);
     std::cout << "Logging back as admin..." << std::endl;
+  } else {
+    std::cout << "User not found." << std::endl;
   }
 }
 
 bool Admin::printCheques() {
   std::vector<int> match = IO::movements->getCol(5)->has(IO::MOVEMENT_PENDING);
-  if(match[0] == -1) {
+  if(match.size() == 0) {
     std::cout << "No pending cheques." << std::endl;
     return false;
   }
@@ -130,8 +127,7 @@ bool Admin::printCheques() {
     {25, "Beneficiary's card number"},
     {15, "Amount (" + IO::CURRENCY + ")", IO::ALIGN_RIGHT},
     {2, " "},
-    {10, "Cheque number"}
-  };
+    {10, "Cheque number"}};
   IO::printRow(printable, true);
 
   CSVRow* row;
@@ -142,9 +138,9 @@ bool Admin::printCheques() {
     int index = comment.find(IO::COORDINATE_SEPARATOR);
     if(index == std::string::npos) continue;
 
-    int user = row->getCell(0)->iget();
+    User current(row->getCell(0)->iget());
     printable[0].content = std::to_string(i);
-    printable[2].content = IO::credentials->getRow(user)->getCell(1)->sget();
+    printable[2].content = current.getCardNumber();
     printable[3].content = row->getCell(2)->sget();
     printable[5].content = comment.substr(index + 3, std::string::npos);
 
@@ -157,7 +153,7 @@ bool Admin::printCheques() {
 
 bool Admin::printTransfers() {
   std::vector<int> match = IO::external->getCol(5)->has(IO::MOVEMENT_PENDING);
-  if(match[0] == -1) {
+  if(match.size() == 0) {
     std::cout << "No pending transfers." << std::endl;
     return false;
   }
@@ -170,16 +166,15 @@ bool Admin::printTransfers() {
     {2, " "},
     {25, "Beneficiary's card number"},
     {2, " "},
-    {20, "Beneficiary's bank"}
-  };
+    {20, "Beneficiary's bank"}};
   IO::printRow(printable, true);
 
   for(int i: match) {
     CSVRow* row = IO::external->getRow(i);
-    int user = row->getCell(0)->iget();
+    User current(row->getCell(0)->iget());
 
     printable[0].content = std::to_string(i);
-    printable[2].content = IO::credentials->getRow(user)->getCell(1)->sget();
+    printable[2].content = current.getCardNumber();
     printable[3].content = row->getCell(2)->sget();
     printable[5].content = row->getCell(1)->sget();
     printable[7].content = row->getCell(3)->sget();
@@ -208,14 +203,16 @@ void Admin::handleCheque() {
   bool select = true;
   while(select) {
     switch(IO::prompt(IO::OPTIONS_CHEQUE)) {
-    case 0:
+    case IO::OPTIONS_CHEQUE_CANCEL:
       return;
-    case 1: {
+    case IO::OPTIONS_CHEQUE_ACCEPT: {
       type = IO::MOVEMENT_OK;
       select = false;
+
+      std::cout << "Cheque accepted." << std::endl;
       break;
     }
-    case 2: {
+    case IO::OPTIONS_CHEQUE_REFUSE: {
       type = IO::MOVEMENT_REFUSED;
       select = false;
       User beneficiary(row->getCell(0)->iget());
@@ -252,21 +249,22 @@ void Admin::handleTransfer() {
   bool select = true;
   while(select) {
     switch(IO::prompt(IO::OPTIONS_TRANSFER)) {
-    case 0:
+    case IO::OPTIONS_TRANSFER_CANCEL:
       return;
-    case 1: {
+    case IO::OPTIONS_TRANSFER_ACCEPT: {
       type = IO::MOVEMENT_OK;
       select = false;
+      std::cout << "Transfer accepted." << std::endl;
       break;
     }
-    case 2: {
+    case IO::OPTIONS_TRANSFER_REFUSE: {
       type = IO::MOVEMENT_REFUSED;
       select = false;
       User sender(row->getCell(0)->iget());
       double amount = row->getCell(2)->dget();
 
       sender.setBalance(sender.getBalance() + amount);
-      std::cout << "Transfer refused. Amount refunded to the user." << std::endl;
+      std::cout << "Transfer refused. Amount refunded." << std::endl;
       break;
     }
     default:
@@ -278,45 +276,50 @@ void Admin::handleTransfer() {
   row->getCell(5)->set(type);
   IO::external->save();
 
-  std::string beneficiary = row->getCell(1)->sget();
-  std::vector<int> matchmovement = IO::movements->getCol(1)->has(beneficiary);
-  IO::movements->getRow(matchmovement[0])->getCell(5)->set(type);
-  IO::movements->save();
-
+  int uuid = row->getCell(6)->iget();
+  int index;
+  if(IO::movements->getCol(6)->first(uuid, index)) {
+    IO::movements->getRow(index)->getCell(5)->set(type);
+    IO::movements->save();
+  }
 }
 
-void Admin::handleAccounts() {
-  //print all the users with blocked accounts:
-  std::vector<int> cardMatch = IO::credentials->getCol(3)->has("3");
-  std::string user;
-  if(cardMatch[0] == -1) {
-    std::cout << "No suspended accounts." << std::endl;
-  }
-  else{
-    CSVRow* row;
-    std::cout << "Currently suspended accounts: \n" << std::endl;
-    for(int i: cardMatch)
-    {
-      row = IO::credentials->getRow(i);
-      user = row->getCell(1)->sget();
-      std::cout << user << std::endl;
+void Admin::handleManage() {
+  std::vector<IO::cell> printable = {
+    {15, "Account ID"},
+    {16, "Card number", IO::ALIGN_RIGHT},
+    {2, " "},
+    {10, "Status"}};
+  IO::printRow(printable, true);
+
+  int i = 0;
+  for(CSVRow* row: IO::credentials->getRows()) {
+    if(row->getCell(0)->iget() == IO::ADMIN_USER_ID) {
+      i++;
+      continue;
     }
-    std::cout << "\nDo you want to reactivate a user? " << std::endl;
-    std::cout << "[1] Reactivate    [2] Back" << std::endl;
-    int option;
-    std::cin >> option;
-    if(option == 1) {
-      std::string number;
-      std::cout << "Insert the card number of the user: ";
-      std::cin >> number;
-      std::vector<int> match = IO::credentials->getCol(1)->has(number, 1);
-      int found = match[0];
-      if(found != -1) {
-        CSVRow* row = IO::credentials->getRow(found);
-        IO::credentials->getCell(found, 3)->set("0");
-        IO::credentials->save();
-        std::cout << "User reabilitated." << std::endl;
-      }
-    }
+
+    printable[0].content = std::to_string(i);
+    printable[1].content = row->getCell(1)->sget();
+    printable[3].content =
+      (row->getCell(3)->iget() >= 3) ? "Disabled" : "Enabled";
+
+    IO::printRow(printable, false);
+    i++;
   }
+
+  std::cout << std::endl << "Input account ID to alter state: ";
+  std::string id;
+  if(!IO::inputNumber(id, true, true) ||
+    IO::credentials->getRows().size() <= stoi(id)) {
+    std::cout << "Invalid account ID." << std::endl;
+    return;
+  }
+
+  User current(IO::credentials->getCell(stoi(id), 0)->iget());
+  int attempts = current.getAttempts();
+  current.setAttempts((attempts >= 3) ? 0 : 3);
+
+  std::cout << "Account successfully " <<
+    (attempts >= 3 ? "enabled" : "disabled") << "." << std::endl;
 }

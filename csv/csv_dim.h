@@ -29,6 +29,14 @@ public:
   std::vector<int> has(int target, int limit = -1,
     int options = HAS_EXACT) const { return has(std::to_string(target)); };
 
+  bool first(std::string, int&, int options = HAS_EXACT) const;
+  bool first(double target, int& dest, int options = HAS_EXACT) const {
+    return first(std::to_string(target), dest, options);
+  };
+  bool first(int target, int& dest, int options = HAS_EXACT) const {
+    return first(std::to_string(target), dest, options);
+  };
+
   static inline const int HAS_EXACT = 0,
     HAS_BEGIN = 1,
     HAS_END = 2;

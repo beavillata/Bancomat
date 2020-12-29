@@ -14,10 +14,11 @@ public:
     bool integer = false, int digits = -1);
   static bool inputPin(std::string&);
   static std::string getDate();
+  static int getUUID();
 
   static const std::string XOR_KEY;
 
-  static inline const int ADMIN_USER_ID = 0;
+  static inline const int ADMIN_USER_ID = 270943001;
 
   static std::unique_ptr<CSVFile> credentials,
     accounts, movements, external;

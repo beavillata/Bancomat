@@ -49,7 +49,7 @@ void Operations::printBalance() {
 void Operations::printMovements() {
   int number = Login::user()->getID();
   std::vector<int> match = IO::movements->getCol(0)->has(number);
-  if(match[0] == -1) {
+  if(match.size() == 0) {
     std::cout << "No movements found for this user." << std::endl;
     return;
   }
@@ -58,11 +58,10 @@ void Operations::printMovements() {
     {16, "Beneficiary"},
     {15, "Amount (" + IO::CURRENCY + ")", IO::ALIGN_RIGHT},
     {2, " "},
-    {22, "Date"},
-    {25, "Type"},
+    {21, "Date"},
+    {28, "Type"},
     {2, " "},
-    {10, "Status"}
-  };
+    {10, "Status"}};
   IO::printRow(printable, true);
 
   CSVRow* current;
@@ -193,52 +192,55 @@ void Operations::handleTransfer() {
   if(initial - amount < 0) {
     std::cout << "Insufficient credit. Operation cancelled." << std::endl;
     return;
-  } else {
-    std::vector<int> match = IO::credentials->getCol(1)->has(beneficiary, 1);
+  }
 
-    if(match[0] != -1) {
-      CSVRow* row = IO::credentials->getRow(match[0]);
-      int id = row->getCell(0)->iget();
+  int match;
+  if(IO::credentials->getCol(1)->first(beneficiary, match)) {
+    CSVRow* row = IO::credentials->getRow(match);
+    int id = row->getCell(0)->iget();
 
-      if(id == Login::user()->getID()) {
-        std::cout << "Cannot transfer money to yourself." << std::endl;
-        return;
-      }
-
-      User other(id);
-
-      Login::user()->addMovement(beneficiary, -amount,
-        IO::MOVEMENT_TRANSFER, IO::MOVEMENT_OK);
-      Login::user()->setBalance(initial - amount);
-
-      std::string type = IO::MOVEMENT_TRANSFER + IO::COORDINATE_SEPARATOR +
-        Login::user()->getCardNumber();
-      other.addMovement(IO::TO_SELF, amount, type, IO::MOVEMENT_OK);
-      other.setBalance(other.getBalance() + amount);
-
-      printBalance();
-    } else {
-      std::cout << "External bank name: ";
-      std::string bank;
-      std::getline(std::cin >> std::ws, bank);
-
-      Login::user()->setBalance(initial - amount);
-      Login::user()->addMovement(beneficiary, -amount,
-      IO::MOVEMENT_TRANSFER, IO::MOVEMENT_PENDING);
-
-      CSVRow* transfer = new CSVRow();
-
-      transfer->append(new CSVCell(Login::user()->getID()))->
-        append(new CSVCell(beneficiary))->
-        append(new CSVCell(amount))->
-        append(new CSVCell(bank))->
-        append(new CSVCell(IO::getDate()))->
-        append(new CSVCell(IO::MOVEMENT_PENDING));
-
-      IO::external->append(transfer);
-      IO::external->save();
-
-      std::cout << "Transaction has to be approved." << std::endl;
+    if(id == Login::user()->getID()) {
+      std::cout << "Cannot transfer money to yourself." << std::endl;
+      return;
     }
+
+    User other(id);
+
+    Login::user()->addMovement(beneficiary, -amount,
+      IO::MOVEMENT_TRANSFER, IO::MOVEMENT_OK);
+    Login::user()->setBalance(initial - amount);
+
+    std::string type = IO::MOVEMENT_TRANSFER + IO::COORDINATE_SEPARATOR +
+      Login::user()->getCardNumber();
+    other.addMovement(IO::TO_SELF, amount, type, IO::MOVEMENT_OK);
+    other.setBalance(other.getBalance() + amount);
+
+    printBalance();
+
+  } else {
+    std::cout << "External bank name: ";
+    std::string bank;
+    std::getline(std::cin >> std::ws, bank);
+
+    int uuid = IO::getUUID();
+
+    Login::user()->setBalance(initial - amount);
+    Login::user()->addMovement(beneficiary, -amount,
+      IO::MOVEMENT_TRANSFER, IO::MOVEMENT_PENDING, uuid);
+
+    CSVRow* transfer = new CSVRow();
+
+    transfer->append(new CSVCell(Login::user()->getID()))->
+      append(new CSVCell(beneficiary))->
+      append(new CSVCell(amount))->
+      append(new CSVCell(bank))->
+      append(new CSVCell(IO::getDate()))->
+      append(new CSVCell(IO::MOVEMENT_PENDING))->
+      append(new CSVCell(uuid));
+
+    IO::external->append(transfer);
+    IO::external->save();
+
+    std::cout << "Transaction has to be approved." << std::endl;
   }
 }

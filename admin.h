@@ -6,14 +6,14 @@ public:
   static void handle();
 
 private:
+  static bool printCheques();
+  static bool printTransfers();
   static void handleOperations();
   static void handleAdd();
   static void handleSub();
   static void handleCheque();
   static void handleTransfer();
-  static bool printCheques();
-  static bool printTransfers();
-  static void handleAccounts();
+  static void handleManage();
 };
 
 #endif

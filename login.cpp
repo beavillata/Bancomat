@@ -9,16 +9,33 @@
 bool Login::login(std::string number, std::string pin) {
   logout(); // First, logout if already logged in
   // Look for the card number in the db
-  std::vector<int> match = IO::credentials->getCol(1)->has(number, 1);
-  int found = match[0];
-  if(found != -1) { // We have a match
-    CSVRow* row = IO::credentials->getRow(found);
+  int match;
+  if(IO::credentials->getCol(1)->first(number, match)) { // We have a match
+    CSVRow* row = IO::credentials->getRow(match);
+    // Check that this account isn't blocked.
+    User temp(row->getCell(0)->iget());
+    if(temp.getAttempts() >= 3) {
+      std::cout << "Suspended account." << std::endl;
+      return false;
+    }
+
     if(row->getCell(2)->is(pin)) {
       std::cout << "Matching credentials. User logged in." << std::endl;
       int id = row->getCell(0)->iget();
 
       current = new User(id);
+      // Reset incorrect login attempts counter.
+      current->setAttempts(0);
       return true;
+    } else {
+      int attempts = temp.getAttempts();
+      if(attempts >= 2) {
+        std::cout << "Too many incorrect login attempts." << std::endl <<
+          "Your account has been suspended." << std::endl << std::endl;
+      }
+
+      temp.setAttempts(attempts + 1);
+      return false;
     }
   }
   std::cout << "Incorrect card number or PIN." << std::endl;
@@ -38,7 +55,8 @@ void Login::logout() {
   delete current;
   current = NULL;
 
-  system("cls||clear"); //to make it work both on windows and unix
+  // Clear the screen, on both windows and unix.
+  system("cls || clear");
   std::ifstream splash("splash.txt");
   std::cout << splash.rdbuf();
 }

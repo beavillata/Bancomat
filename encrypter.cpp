@@ -3,45 +3,52 @@
 #include <sstream>
 #include <fstream>
 
-
 //PER COMPILARE: make encryption -> non c'è più bisogno di modificare questi dati!
 //Ho aggiunto il cin quindi dovremmo essere salvi
 //Visto che di default il compilatore sputa fuori un a.out che fa casino con quello del
 //programma principale ho modificato il make -> ora sputa fuori encrypter!
 //PER ESEGUIRE: ./encrypter
-int main() {
 
-	std::string key("MOMENTOANGOLARE");
-	std::string toconvert;
-	std::string directory = "persistent/";
+const std::string KEY = "MOMENTOANGOLARE",
+	DIRECTORY = "persistent/";
+
+int main() {
+	std::string file;
 	std::cout << "Insert file name to convert: ";
-	std::cin >> toconvert;
-	std::string input;
-	std::string output;
-	std::cout << "Conversion type:" << std::endl;
-	std::cout << "1. dat to csv		2. csv to dat" << std::endl;
+	std::cin >> file;
+
 	int option;
+	std::cout << "Conversion type:" << std::endl;
+	std::cout << "[1] DAT to CSV \t [2] CSV to DAT" << std::endl;
 	std::cin >> option;
-	if(option == 1){
-		input = directory + toconvert + ".dat";
-		output = directory + toconvert + ".csv";
+
+	std::string input, output;
+	switch(option) {
+	case 1:
+		input = DIRECTORY + file + ".dat";
+		output = DIRECTORY + file + ".csv";
+		break;
+	case 2:
+		input = DIRECTORY + file + ".csv";
+		output = DIRECTORY + file + ".dat";
+		break;
+	default:
+		return 1;
 	}
-	else if(option == 2){
-		input = directory + toconvert + ".csv";
-		output = directory + toconvert + ".dat";
-	}
+
 	std::ifstream in(input);
 	std::stringstream ss;
 	ss << in.rdbuf();
 	std::string value(ss.str());
 	in.close();
 
-	std::string fullKey(key);
+	std::string fullKey(KEY);
 	// XOR cipher works if key is at least as long as message
 	while(fullKey.size() < value.size()) {
-		fullKey += key;
+		fullKey += KEY;
 	}
 
+	// Doing the actual (de)ciphering
 	for(std::string::size_type i = 0; i < value.size(); ++i) {
 		value[i] ^= fullKey[i % fullKey.size()];
 	}
