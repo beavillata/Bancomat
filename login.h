@@ -7,6 +7,7 @@ class Login {
 public:
   static bool login(std::string, std::string);
   static void login(int);
+  
   static bool logged();
   static void logout();
 

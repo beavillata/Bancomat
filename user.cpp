@@ -1,12 +1,10 @@
-#include <iostream>
-#include <string>
-
 #include "user.h"
 
 void User::setBalance(double balance) {
   int index;
+  // First, seek this user in IO::accounts...
   IO::accounts->getCol(0)->first(id, index);
-
+  // ...and set its new balance in there.
   IO::accounts->getCell(index, 1)->set(balance);
   IO::accounts->save();
 }
@@ -26,6 +24,7 @@ double User::getBalance() {
   return IO::accounts->getCell(index, 1)->dget();
 }
 
+// Get user's UUID (!= ROW INDEX IN DATABASE)
 int User::getID() {
   return id;
 }
@@ -39,6 +38,7 @@ void User::setAttempts(int attempts) {
   IO::credentials->save();
 }
 
+// Get the user's row from IO::credentials.
 CSVRow* User::getRow() {
   int index;
   IO::credentials->getCol(0)->first(id, index);
@@ -56,11 +56,12 @@ bool User::isAdmin() {
 *  Don't worry, there won't be memory leaks.
 *  ==================================================== */
 
+// Add a movement to this user's account.
 void User::addMovement(std::string to,
   double amount, std::string type, std::string status, int uuid) {
-
+  // Instantiate new row to contain our movement.
   CSVRow* operation = new CSVRow();
-
+  // If no UUID provided pick a new one.
   if(uuid == 0) uuid = IO::getUUID();
 
   operation->append(new CSVCell(id))->

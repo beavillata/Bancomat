@@ -1,6 +1,7 @@
 #include <iomanip>
 #include <climits>
 #include <cstdlib>
+#include <fstream>
 
 #include <termios.h>
 #include <unistd.h>
@@ -12,6 +13,9 @@
 
 const std::string IO::XOR_KEY("MOMENTOANGOLARE");
 
+/*  Instances for our database files.
+ *  Using smart pointers to avoid garbage collection.
+ */
 std::unique_ptr<CSVFile>
   IO::credentials{new CSVFile("persistent/credentials.dat", XOR_KEY)};
 std::unique_ptr<CSVFile>
@@ -33,6 +37,7 @@ const std::string IO::TO_SELF("SELF"),
 
 const std::string IO::CURRENCY("EUR");
 
+// Various menu choices...
 const std::vector<std::string> IO::OPTIONS_MAIN = {"Logout",
   "Balance", "Movements", "Withdraw", "Deposit", "Transfer"};
 
@@ -49,16 +54,19 @@ const std::vector<std::string> IO::OPTIONS_CHEQUE = {"Cancel",
 const std::vector<std::string> IO::OPTIONS_TRANSFER = {"Cancel",
   "Approve transfer", "Refuse transfer"};
 
+// Prompt the user for a choice from a specific menu passed as _options_.
 int IO::prompt(std::vector<std::string> options) {
   int size = options.size();
   for(int i = 0; i < size; i++) {
     std::cout << std::left << "[" << i + 1 << "] " <<
       std::setw(15) << options[i];
+    // New line only if third option but not last row.
     if(i % 3 == 2 && i != size - 1) std::cout << std::endl;
   }
   std::cout << std::endl << "Select option: ";
   std::string selected;
   int ret;
+  // We want a one-digit positive integer.
   if(inputNumber(selected, true, true, 1)) ret = stoi(selected) - 1;
   else ret = -1;
   std::cout << std::endl;
@@ -106,17 +114,17 @@ int IO::getObfuscated() {
     //TCGETATTR(obj, termios) = gets the parameters associated with the object
     //and stores them in the termios structure
     tcgetattr(STDIN_FILENO, &termOld); //STDIN_FILENO -> descriptor of input standard file
-    //I must get trace of the changes to the object
+    //we want to keep the old object to restore it after changing it
     termNew = termOld;
-    //ICANON is responsible to decide if the terminal is operating
+    //ICANON is responsible to deciding if the terminal is operating
     //in canonical mode (ICANON set) or not (ICANON not set)
 
     //ECHO: when is set characters are echoed back, if it is clear input is not echoed
 
     //c_lflag is responsible to control the functions and it is composed using OR
 
-    //I am setting both ICANON and ECHO to clear!
-    termNew.c_lflag &= ~(ICANON | ECHO); //
+    //we are setting both ICANON and ECHO to clear!
+    termNew.c_lflag &= ~(ICANON | ECHO);
 
     //effects on the terminal are not effective until tcsetattr() is called
     //tcsetattr(object, optional_actions, termios);
@@ -124,19 +132,18 @@ int IO::getObfuscated() {
     //occurr immediately!
     tcsetattr(STDIN_FILENO, TCSANOW, &termNew);
     digit = getchar();
-    //When I finish I want to restore everything back to normal:
+    //When finished we want to restore everything back to normal:
     tcsetattr(STDIN_FILENO, TCSANOW, &termOld);
 
     return digit;
 
   #elif defined _WIN32
-    // If on Windows we don't need any of that
+    // If on Windows then we don't need any of that
     return 0;
   #endif
 }
 
 bool IO::inputPin(std::string& ref) {
-
   #if defined _WIN32
     int i = 0;
     std::char c;
@@ -155,12 +162,12 @@ bool IO::inputPin(std::string& ref) {
     digit = 0;
     // Store digits till RETURN pressed
     while((digit = getObfuscated()) != RETURN) {
-      // Handle backspace
-      //I have to add this because I changed ICANON to noncanonical and it doesn't
+      //we have to add this because we changed ICANON to noncanonical and it doesn't
       //evaluate the backspaces anymore when in this mode
       if(digit == BACKSPACE) {
         if(ref.length() != 0) {
-          std::cout <<"\b \b"; //\b moves the cursor back. I have to also add a space after it
+          std::cout <<"\b \b";
+          //\b moves the cursor back. We also have to add a space after it
           //to delete the text
           ref.resize(ref.length() - 1);
         }
@@ -183,6 +190,9 @@ bool IO::inputPin(std::string& ref) {
   return true;
 }
 
+// This prints a row using the _data_ passed. It sets each column's width
+// as well as the alignment. If we have a table header (_header_ = true)
+// then we also add an extra newline.
 void IO::printRow(std::vector<cell> data, bool header) {
   for(cell element: data) {
     if(element.align == IO::ALIGN_LEFT) std::cout << std::left;
@@ -202,6 +212,17 @@ std::string IO::getDate() {
   std::string date(datec);
   return date;
 }
+
+// Simply prints out the splash screen defined in splash.txt.
+void IO::splash() {
+  std::ifstream splash("splash.txt");
+  std::cout << splash.rdbuf();
+  splash.close();
+}
+
+// Random, so not 100% guaranteed to be unique. However the chances of a
+// 32 bit integer clashing with another are slimmer than those of Earth
+// getting hit by a meteorite. It should be fine.
 
 int IO::getUUID() {
   srand(time(0));

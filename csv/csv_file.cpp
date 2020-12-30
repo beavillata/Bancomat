@@ -1,7 +1,3 @@
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
 #include "csv_file.h"
 
 /*  By instantiating a CSVFile object one can control rows, columns

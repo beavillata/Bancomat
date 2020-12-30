@@ -1,8 +1,7 @@
 #ifndef CSVFILE_H
 #define CSVFILE_H
 
-#include <string>
-#include <vector>
+#include <fstream>
 
 #include "csv_dim.h"
 

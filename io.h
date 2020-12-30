@@ -10,19 +10,22 @@
 class IO {
 public:
   static int prompt(std::vector<std::string>);
+
   static bool inputNumber(std::string&, bool positive = false,
     bool integer = false, int digits = -1);
   static bool inputPin(std::string&);
+
   static std::string getDate();
   static int getUUID();
+  static void splash();
 
-  static const std::string XOR_KEY;
-
-  static inline const int ADMIN_USER_ID = 270943001;
+  static inline const int ADMIN_USER_ID = 270943001,
+    CHEQUE_NUMBER_DIGITS = 7;
 
   static std::unique_ptr<CSVFile> credentials,
     accounts, movements, external;
 
+  static const std::string XOR_KEY, CURRENCY;
   static const std::string TO_SELF,
     COORDINATE_SEPARATOR,
     MOVEMENT_DEPOSIT_CASH,
@@ -32,8 +35,6 @@ public:
     MOVEMENT_OK,
     MOVEMENT_PENDING,
     MOVEMENT_REFUSED;
-
-  static const std::string CURRENCY;
 
   static const std::vector<std::string> OPTIONS_MAIN,
     OPTIONS_DEPOSIT,
@@ -60,7 +61,7 @@ public:
     OPTIONS_ADMIN_CHEQUE = 4,
     OPTIONS_ADMIN_TRANSFER = 5,
     OPTIONS_ADMIN_OPERATIONS = 6,
-    OPTIONS_ADMIN_REACTIVATE = 7;
+    OPTIONS_ADMIN_MANAGE = 7;
 
   static inline const int OPTIONS_CHEQUE_CANCEL = 0,
     OPTIONS_CHEQUE_ACCEPT = 1,
@@ -73,6 +74,7 @@ public:
   static inline const bool ALIGN_LEFT = true,
     ALIGN_RIGHT = false;
 
+  // Out printable cell structure.
   struct cell {
     int width;
     std::string content;

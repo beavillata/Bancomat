@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "csv_dim.h"
 
 // Append a cell at the end of this dimension (column or row that is).
@@ -64,7 +62,7 @@ std::vector<int> CSVCol::has(std::string target, const int limit,
  */
 bool CSVCol::first(std::string target, int& dest, const int options) const {
   std::vector<int> result = has(target, 1, options);
-  if(result.size() == 0) return false;
+  if(result.empty()) return false;
 
   dest = result[0];
   return true;

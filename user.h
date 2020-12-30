@@ -18,8 +18,9 @@ public:
   std::string getPin();
   double getBalance();
   int getID();
-  bool isAdmin();
   int getAttempts();
+
+  bool isAdmin();
 
 private:
   CSVRow* getRow();

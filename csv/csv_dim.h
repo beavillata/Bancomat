@@ -1,6 +1,8 @@
 #ifndef CSVDIM_H
 #define CSVDIM_H
 
+#include <vector>
+
 #include "csv_cell.h"
 
 /*  CSVDimension is a parent class of both CSVRow and CSVCol.

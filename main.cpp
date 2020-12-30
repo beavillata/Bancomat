@@ -1,21 +1,15 @@
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-
 #include "csv/csv_file.h"
 #include "login.h"
 #include "operations.h"
 #include "admin.h"
 
 int main(int argc, char* argv[]) {
-  std::ifstream splash("splash.txt");
-  std::cout << splash.rdbuf();
-  splash.close();
-
+  IO::splash();
+  // Set correct output settings for floating point numbers.
   std::cout << std::setprecision(2) << std::fixed;
 
   bool exit = false;
+  // Main program loop.
   while(!exit) {
     std::string number, pin;
 
