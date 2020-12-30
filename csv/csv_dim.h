@@ -3,6 +3,10 @@
 
 #include "csv_cell.h"
 
+/*  CSVDimension is a parent class of both CSVRow and CSVCol.
+ *  While CSVCol is much more powerful than CSVRow, both support some
+ *  basic operations that are provided by this class
+ */
 class CSVDimension {
 public:
   CSVDimension* append(CSVCell*);
@@ -22,6 +26,9 @@ protected:
 
 class CSVCol: public CSVDimension {
 public:
+  // has() and first() can be used with std::string, int or double.
+  // By default there is no limit to the amount of matches it looks for and
+  // wants the cell's content to be exactly the _target_ value.
   std::vector<int> has(std::string, int limit = -1,
     int options = HAS_EXACT) const;
   std::vector<int> has(double target, int limit = -1,

@@ -1,5 +1,5 @@
 *.out
 .DS_Store
 *.o
-persistent/*.csv
+*.csv
 encrypter

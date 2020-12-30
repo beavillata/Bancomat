@@ -42,15 +42,9 @@ int main() {
 	std::string value(ss.str());
 	in.close();
 
-	std::string fullKey(KEY);
-	// XOR cipher works if key is at least as long as message
-	while(fullKey.size() < value.size()) {
-		fullKey += KEY;
-	}
-
 	// Doing the actual (de)ciphering
-	for(std::string::size_type i = 0; i < value.size(); ++i) {
-		value[i] ^= fullKey[i % fullKey.size()];
+	for(int i = 0; i < value.size(); ++i) {
+		value[i] ^= KEY[i % KEY.size()];
 	}
 
 	std::ofstream out(output);

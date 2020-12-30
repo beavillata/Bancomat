@@ -15,8 +15,6 @@ class CSVFile {
     // Unused, for now
     CSVFile& operator<<(CSVRow&);
 
-    void reload();
-
     std::vector<CSVRow*> getRows() const;
     std::vector<CSVCol*> getCols() const;
 
@@ -28,17 +26,17 @@ class CSVFile {
     CSVFile* insert(CSVRow*, const int);
     CSVFile* remove(const int);
 
+    void reload();
     void rebase();
-    void clear();
     void save();
+    void clear();
+
     std::string crypto(std::string);
 
   private:
-    static inline const char TOKEN_SEPARATOR = ',',
-      COMMENT_HEAD = '#';
-
-    std::string path, key;
-    int n, m;
+    static inline const char TOKEN_SEPARATOR = ',';
+    std::string path, key; // File path and cipher key.
+    int n, m; // Database bounds.
 
     std::vector<std::string> tokenize(const std::string);
     std::vector<CSVCol*> colsVector;
