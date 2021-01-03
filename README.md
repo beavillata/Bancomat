@@ -74,11 +74,43 @@ The admin login has the following options:
 1. **Balance**: prints the current ATM's balance;
 2. **Take Cash**: allows the admin to withdraw cash from the ATM;
 3. **Add Cash**: allows the admin to deposit cash to the ATM;
-4. **Manage cheques**: the admin is responsible to validate a cheque, checking if it exists and the number is correct. After that he can decide if *Approve* or *
-4. **Manage account**: the admin is able to enter customer's account by indicating the Card Number in order to fix problems or check movements;
-5. **
+4. **Manage cheques**: the admin is responsible to validate a cheque, checking if it exists and if the number is correct. After that he can decide to *Approve* or *Refuse* them.
+5. **Manage transfers**: when transfers to external banks are performed they need to be validated, checking if the bank exists and if the card number is correct. The admin is responsible to do that and he can then decide to *Approve* or *Refuse* them.
+6. **Manage account**: the admin is able to enter customer's account by indicating the Card Number in order to fix problems or check movements;
+7. **Reactivate account**: when a user tries to login but uses a wrong pin for three consecutive times the account is automatically blocked. The admin is able to reactivate it under request of the customer.
+
+## Security
+
+### Encryption
+
+A system to store customer's data has been developed. To preserve those we elaborated an encryption method based on XOR.
+The *csv* files are converted to *dat* using a secret key to make them unreadable.
+For educative reasons the *encrypter* file is included between the file and it is possible to convert files to read them. Normally this must be avoided.
+
+To encrypt or decrypt a file is possible to execute the following command line:
+```
+make encryption
+```
+this will generate an executable file that can be called by:
+```
+./encrypter
+```
+The program will ask you the name of the file you want to encrypt/decrypt and then if the conversion you want to do is from *dat* to *csv* or from *csv* to *dat*.
+After the program ends a new file will be available.
+
+## Password
+
+To protect the system from brute force attacks a user can only insert a wrong password for three consecutive times. After that his account will be blocked and an admin will be required to unlock it. When a successful login is performed the count of wrong passwords is cleared.
+
+Moreover, pin characters are hided while typing to make the login process safer. Since this method requires interaction with the output system, full compatibility on windows machines is not ensured.
+
+## UML
+
+### Use case
+
+### Class
 
 ## Authors
-* [Filippo Miserocchi](https://github.com/hbar-boi) - Database Management
-* [Beatrice Villata](https://github.com/beavillata) - Customer Interface
+* [Filippo Miserocchi](https://github.com/hbar-boi) - Database Management and encryption
+* [Beatrice Villata](https://github.com/beavillata) - Customer Interface, make and README
 * [Lorenzo Occelli](https://github.com/LoryOccy) - Admin Interface
