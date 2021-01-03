@@ -106,7 +106,9 @@ Moreover, pin characters are hided while typing to make the login process safer.
 
 ## UML
 
-### Use case
+### Use case diagram
+
+![alt text](https://github.com/beavillata/bancomat/blob/master/Use_case_diagram.png?raw=true)
 
 ### Class
 
