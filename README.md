@@ -50,7 +50,7 @@ make clean
 After the execution of the compiled files
 you will be direct to the login page.
 Here the program will ask the card number and the pin of the user. It will then check if these are in the database and if they are correct.
-The admin is able to login with a special account *(Card Number = 0000000000000000 Pin = 00000)*. This account is flagged by the *ID = 0*, giving a different menu after the authentication.
+The admin is able to login with a special account *(Card Number = 9999999999999999 Pin = 99999)*. This account is flagged by the *ID = 0*, giving a different menu after the authentication.
 
 The user login page gives the following options to the customers:
 
