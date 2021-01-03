@@ -83,7 +83,7 @@ The admin login has the following options:
 
 ### Encryption
 
-A system to store customer's data has been developed. To preserve those we elaborated an encryption method based on XOR.
+A system to store customer's data has been developed. To preserve those we elaborated an encryption method based on the XOR cipher.
 The *csv* files are converted to *dat* using a secret key to make them unreadable.
 For educative reasons the *encrypter* file is included between the file and it is possible to convert files to read them. Normally this must be avoided.
 
@@ -100,9 +100,9 @@ After the program ends a new file will be available.
 
 ## Password
 
-To protect the system from brute force attacks a user can only insert a wrong password for three consecutive times. After that his account will be blocked and an admin will be required to unlock it. When a successful login is performed the count of wrong passwords is cleared.
+To protect the system from brute force attacks a user can only insert a wrong password for three consecutive times. After that his account will be blocked and an admin will be required to unlock it. When a successful login is performed the count of wrong attempts is cleared.
 
-Moreover, pin characters are hided while typing to make the login process safer. Since this method requires interaction with the output system, full compatibility on windows machines is not ensured.
+Moreover, pin characters are hidden while typing to make the login process safer. Since this method requires interaction with the output system, full compatibility on windows machines is not ensured.
 
 ## UML
 
@@ -113,6 +113,6 @@ Moreover, pin characters are hided while typing to make the login process safer.
 ### Class
 
 ## Authors
-* [Filippo Miserocchi](https://github.com/hbar-boi) - Database Management and encryption
-* [Beatrice Villata](https://github.com/beavillata) - Customer Interface, make and README
-* [Lorenzo Occelli](https://github.com/LoryOccy) - Admin Interface
+* [Filippo Miserocchi](https://github.com/hbar-boi)
+* [Beatrice Villata](https://github.com/beavillata)
+* [Lorenzo Occelli](https://github.com/LoryOccy)
