@@ -133,7 +133,20 @@ std::vector<int> Admin::printCheques() {
   // as status: they will be cheques AND foreign bank transfers, but we'll
   // take care of those in a while.
   std::vector<int> match = IO::movements->getCol(5)->has(IO::MOVEMENT_PENDING);
-  if(match.empty()) {
+
+  std::vector<int> cheques;
+  CSVRow* row;
+  for(int i: match) {
+    row = IO::movements->getRow(i);
+    std::string comment = row->getCell(4)->sget();
+    // If the comment attached to this row contains the COORDINATE_SEPARATOR
+    // then we know it's a cheque...
+    int index = comment.find(IO::COORDINATE_SEPARATOR);
+    // ...otherwise it will be a foreign bank transfer and we can ignore it.
+    if(index != std::string::npos) cheques.push_back(i);
+  }
+
+  if(cheques.empty()) {
     std::cout << "No pending cheques." << std::endl;
   } else {
     // Print out a nice header for the table...
@@ -151,15 +164,8 @@ std::vector<int> Admin::printCheques() {
 
     CSVRow* row;
     // ...and then print out the actual data.
-    for(int i: match) {
+    for(int i: cheques) {
       row = IO::movements->getRow(i);
-
-      std::string comment = row->getCell(4)->sget();
-      // If the comment attached to this row contains the COORDINATE_SEPARATOR
-      // then we know it's a cheque...
-      int index = comment.find(IO::COORDINATE_SEPARATOR);
-      // ...otherwise it will be a foreign bank transfer and we can ignore it.
-      if(index == std::string::npos) continue;
 
       User current(row->getCell(0)->iget());
       // Before printing the data we change the content of
@@ -171,6 +177,8 @@ std::vector<int> Admin::printCheques() {
       // Amount of this cheque.
       printable[3].content = row->getCell(2)->sget();
       // Cheque number.
+      std::string comment = row->getCell(4)->sget();
+      int index = comment.find(IO::COORDINATE_SEPARATOR);
       printable[5].content = comment.substr(
         index + IO::COORDINATE_SEPARATOR.size(), std::string::npos);
 
@@ -178,7 +186,7 @@ std::vector<int> Admin::printCheques() {
     }
     std::cout << std::endl;
   }
-  return match;
+  return cheques;
 }
 
 std::vector<int> Admin::printTransfers() {
