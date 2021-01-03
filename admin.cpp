@@ -245,7 +245,6 @@ void Admin::handleCheque(std::vector<int> match) {
     case IO::OPTIONS_CHEQUE_ACCEPT: {
       type = IO::MOVEMENT_OK;
       select = false;
-
       std::cout << "Cheque accepted." << std::endl;
       break;
     }

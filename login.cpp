@@ -34,7 +34,7 @@ bool Login::login(std::string number, std::string pin) {
       // scream at the user.
       int attempts = temp.getAttempts();
       temp.setAttempts(attempts + 1);
-      if(attempts >= 3) {
+      if(attempts >= 2) {
         // If the user got the pin wrong 3 times scream even harder.
         std::cout << "Too many incorrect login attempts." << std::endl <<
         "Your account has been suspended." << std::endl << std::endl;
