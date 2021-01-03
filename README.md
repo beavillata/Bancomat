@@ -108,7 +108,7 @@ Moreover, pin characters are hided while typing to make the login process safer.
 
 ### Use case diagram
 
-![alt text](https://github.com/beavillata/bancomat/blob/master/Use_case_diagram.png?raw=true)
+![alt text](https://github.com/hbar-boi/Bancomat/blob/master/Use_case_diagram.png?raw=true)
 
 ### Class
 
