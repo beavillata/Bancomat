@@ -13,9 +13,13 @@ Program developed to handle an ATM. It is possible to login as a customer to wit
 * Check the current amount of money in the ATM machine;
 * Withdraw money deposited by the users;
 * Add money to permit withdraws by customers;
+* Validate cheques;
+* Validate transfers towards external banks;
 * Enter customer accounts to fix problems;
+* Reactivate blocked accounts;
 
 **Control conditions** have been added to admit only valid transactions:
+* If the pin inserted is wrong for three consecutive times the account is blocked and must be reactivated by an admin;
 * It is impossible to withdraw more money than the ones currently on the account;
 * It is impossible to withdraw, deposit or transfer negative amounts of money;
 * The card number format is checked and it has to be a valid format (16 characters integer type);
@@ -70,7 +74,9 @@ The admin login has the following options:
 1. **Balance**: prints the current ATM's balance;
 2. **Take Cash**: allows the admin to withdraw cash from the ATM;
 3. **Add Cash**: allows the admin to deposit cash to the ATM;
-4. **Account Management**: the admin is able to enter customer's account by indicating the Card Number in order to fix problems or check movements;
+4. **Manage cheques**: the admin is responsible to validate a cheque, checking if it exists and the number is correct. After that he can decide if *Approve* or *
+4. **Manage account**: the admin is able to enter customer's account by indicating the Card Number in order to fix problems or check movements;
+5. **
 
 ## Authors
 * [Filippo Miserocchi](https://github.com/hbar-boi) - Database Management
