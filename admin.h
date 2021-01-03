@@ -1,6 +1,8 @@
 #ifndef ADMIN_H
 #define ADMIN_H
 
+#include <vector>
+
 class Admin {
 public:
   // The only accessible option. Extra logic is taken care of inside

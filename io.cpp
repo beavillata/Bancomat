@@ -3,8 +3,15 @@
 #include <cstdlib>
 #include <fstream>
 
-#include <termios.h>
-#include <unistd.h>
+#if defined (__LINUX__) || defined(__gnu_linux__) \
+    || defined(__linux__) || (__APPLE__)
+	#include <termios.h>
+	#include <unistd.h>
+#elif defined _WIN32
+	#include <conio.h>
+	#include <ctype.h>
+#endif
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -146,8 +153,8 @@ int IO::getObfuscated() {
 bool IO::inputPin(std::string& ref) {
   #if defined _WIN32
     int i = 0;
-    std::char c;
-    while((c = getch()) != '\n') {
+    char c;
+    while((c = _getch()) != '\n') {
       ref[i] = c;
       printf("*");
       i++;
