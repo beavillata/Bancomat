@@ -33,14 +33,14 @@ bool Login::login(std::string number, std::string pin) {
       // If we have a wrong pin increase the counter by 1 and
       // scream at the user.
       int attempts = temp.getAttempts();
-      if(attempts >= 2) {
+      temp.setAttempts(attempts + 1);
+      if(attempts >= 3) {
         // If the user got the pin wrong 3 times scream even harder.
         std::cout << "Too many incorrect login attempts." << std::endl <<
-          "Your account has been suspended." << std::endl << std::endl;
-      }
+        "Your account has been suspended." << std::endl << std::endl;
 
-      temp.setAttempts(attempts + 1);
-      return false;
+        return false;
+      }
     }
   }
   std::cout << "Incorrect card number or PIN." << std::endl;

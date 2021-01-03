@@ -8,7 +8,7 @@
 	#include <termios.h>
 	#include <unistd.h>
 #elif defined _WIN32
-	#include <conio.h>
+  #include <conio.h>
 	#include <ctype.h>
 #endif
 
@@ -151,39 +151,45 @@ int IO::getObfuscated() {
 }
 
 bool IO::inputPin(std::string& ref) {
-  #if defined _WIN32
-    int i = 0;
-    char c;
-    while((c = _getch()) != '\n') {
-      ref[i] = c;
-      printf("*");
-      i++;
-    }
-
-  #elif defined (__LINUX__) || defined(__gnu_linux__) || \
-    defined(__linux__) || (__APPLE__)
-    const char BACKSPACE = 127, RETURN = 10;
-
-    unsigned char digit = 0;
-    digit = getObfuscated();
-    digit = 0;
-    // Store digits till RETURN pressed
-    while((digit = getObfuscated()) != RETURN) {
-      //we have to add this because we changed ICANON to noncanonical and it doesn't
-      //evaluate the backspaces anymore when in this mode
-      if(digit == BACKSPACE) {
-        if(ref.length() != 0) {
-          std::cout <<"\b \b";
-          //\b moves the cursor back. We also have to add a space after it
-          //to delete the text
-          ref.resize(ref.length() - 1);
-        }
-      } else {
-        ref += digit;
-        std::cout << "*";
+#if defined _WIN32
+  int c;
+  while(c = _getch()) {
+    if(c == 0x0D) {
+      break;
+    } else if(c == 0x08) {
+      if(ref.size() > 0) {
+        std::cout << "\b \b";
+        ref.pop_back();
       }
+    } else {
+      ref.push_back(char(c));
+      std::cout << "*";
     }
-  #endif
+  }
+#elif defined (__LINUX__) || defined(__gnu_linux__) || \
+  defined(__linux__) || (__APPLE__)
+  const char BACKSPACE = 127, RETURN = 10;
+
+  unsigned char digit = 0;
+  digit = getObfuscated();
+  digit = 0;
+  // Store digits till RETURN pressed
+  while((digit = getObfuscated()) != RETURN) {
+    //we have to add this because we changed ICANON to noncanonical and it doesn't
+    //evaluate the backspaces anymore when in this mode
+    if(digit == BACKSPACE) {
+      if(ref.length() != 0) {
+        std::cout << "\b \b";
+        //\b moves the cursor back. We also have to add a space after it
+        //to delete the text
+        ref.pop_back();
+      }
+    } else {
+      ref += digit;
+      std::cout << "*";
+    }
+  }
+#endif
 
   char* remainder;
   double number = strtod(ref.c_str(), &remainder);

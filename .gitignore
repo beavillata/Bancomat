@@ -3,3 +3,5 @@
 *.o
 *.csv
 encrypter
+*.obj
+*.exe
