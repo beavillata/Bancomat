@@ -1,4 +1,9 @@
 # Unito Bank
+
+
+TODO:
+Add termination to use case diagram
+
 Program developed to handle an ATM. It is possible to login as a customer to withdraw or deposit money to the account or login as an admin fixing any problem or inconvenience.
 
 **Customers** are able to:
@@ -106,7 +111,7 @@ Moreover, pin characters are hidden while typing to make the login process safer
 
 ##ID
 
-To protect personal informations of customers, an ID has been generated. We decided not to use the card number as ID so that if only a file is violated it would be hard to connect the informations to a specific individual. For instance, reading the movement file, you will not know who performed the transaction without having also access to the credentials database. 
+To protect personal informations of customers, an ID has been generated. We decided not to use the card number as ID so that if only a file is violated it would be hard to connect the informations to a specific individual. For instance, reading the movement file, you will not know who performed the transaction without having also access to the credentials database.
 
 ## UML
 
