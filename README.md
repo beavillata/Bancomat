@@ -1,4 +1,9 @@
 # Unito Bank
+
+
+TODO:
+Add termination to use case diagram
+
 Program developed to handle an ATM. It is possible to login as a customer to withdraw or deposit money to the account or login as an admin fixing any problem or inconvenience.
 
 **Customers** are able to:
