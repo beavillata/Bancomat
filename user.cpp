@@ -1,6 +1,6 @@
 #include "user.h"
 
-void User::setBalance(double balance) {
+void User::setBalance(const double balance) {
   int index;
   // First, seek this user in IO::accounts...
   IO::accounts->getCol(0)->first(id, index);
@@ -9,15 +9,15 @@ void User::setBalance(double balance) {
   IO::accounts->save();
 }
 
-std::string User::getCardNumber() {
+const std::string User::getCardNumber() const {
   return getRow()->getCell(1)->sget();
 }
 
-std::string User::getPin() {
+const std::string User::getPin() const {
   return getRow()->getCell(2)->sget();
 }
 
-double User::getBalance() {
+const double User::getBalance() const {
   int index;
   IO::accounts->getCol(0)->first(id, index);
 
@@ -25,28 +25,28 @@ double User::getBalance() {
 }
 
 // Get user's UUID (!= ROW INDEX IN DATABASE)
-int User::getID() {
+const int User::getID() const {
   return id;
 }
 
-int User::getAttempts() {
+const int User::getAttempts() const {
   return getRow()->getCell(3)->iget();
 }
 
-void User::setAttempts(int attempts) {
+void User::setAttempts(const int attempts) {
   getRow()->getCell(3)->set(attempts);
   IO::credentials->save();
 }
 
 // Get the user's row from IO::credentials.
-CSVRow* User::getRow() {
+const CSVRow* User::getRow() const {
   int index;
   IO::credentials->getCol(0)->first(id, index);
 
   return IO::credentials->getRow(index);
 }
 
-bool User::isAdmin() {
+const bool User::isAdmin() const {
   return (id == IO::ADMIN_USER_ID);
 }
 
@@ -57,8 +57,8 @@ bool User::isAdmin() {
 *  ==================================================== */
 
 // Add a movement to this user's account.
-void User::addMovement(std::string to,
-  double amount, std::string type, std::string status, int uuid) {
+void User::addMovement(const std::string to, const double amount,
+  const std::string type, const std::string status, int uuid) {
   // Instantiate new row to contain our movement.
   CSVRow* operation = new CSVRow();
   // If no UUID provided pick a new one.

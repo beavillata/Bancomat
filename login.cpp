@@ -1,6 +1,6 @@
 #include "login.h"
 
-bool Login::login(std::string number, std::string pin) {
+bool Login::login(const std::string number, const std::string pin) {
   logout(); // Logout first (just in case).
 
   // Look for the card number in the db
@@ -48,7 +48,7 @@ bool Login::login(std::string number, std::string pin) {
 }
 
 // Shortcut, only use internally...
-void Login::login(int id) {
+void Login::login(const int id) {
   logout(); // First, logout if already logged in
   current = new User(id);
 }

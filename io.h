@@ -9,14 +9,14 @@
 
 class IO {
 public:
-  static int prompt(std::vector<std::string>);
+  static const int prompt(std::vector<std::string>);
 
-  static bool inputNumber(std::string&, bool positive = false,
-    bool integer = false, int digits = -1);
-  static bool inputPin(std::string&);
+  static const bool inputNumber(std::string&, const bool positive = false,
+    const bool integer = false, const int digits = -1);
+  static const bool inputPin(std::string&);
 
-  static std::string getDate();
-  static int getUUID();
+  static const std::string getDate();
+  static const int getUUID();
   static void splash();
 
   static inline const int ADMIN_USER_ID = 270943001,
@@ -61,7 +61,8 @@ public:
     OPTIONS_ADMIN_CHEQUE = 4,
     OPTIONS_ADMIN_TRANSFER = 5,
     OPTIONS_ADMIN_OPERATIONS = 6,
-    OPTIONS_ADMIN_MANAGE = 7;
+    OPTIONS_ADMIN_MANAGE = 7,
+    OPTIONS_ADMIN_TERMINATE = 8;
 
   static inline const int OPTIONS_CHEQUE_CANCEL = 0,
     OPTIONS_CHEQUE_ACCEPT = 1,
@@ -81,10 +82,10 @@ public:
     bool align = ALIGN_LEFT;
   };
 
-  static void printRow(std::vector<cell>, bool);
+  static void printRow(std::vector<cell>, const bool);
 
 private:
-  static int getObfuscated();
+  static const int getObfuscated();
 };
 
 #endif

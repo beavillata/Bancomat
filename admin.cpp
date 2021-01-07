@@ -52,6 +52,10 @@ void Admin::handle() {
       // Activate or block users' accounts.
       Admin::handleManage();
       break;
+    case IO::OPTIONS_ADMIN_TERMINATE:
+      std::cout << "Exiting UnitoBank..." << std::endl;
+      exit(0);
+      break;
     default:
       std::cout << "Invalid option selected." << std::endl;
       break;

@@ -53,7 +53,7 @@ const std::vector<std::string> IO::OPTIONS_DEPOSIT = {"Cancel",
 
 const std::vector<std::string> IO::OPTIONS_ADMIN = {"Logout",
   "Balance", "Take cash", "Add cash", "Manage cheques",
-  "Manage transfers", "Manage account", "Manage access"};
+  "Manage transfers", "Manage account", "Manage access", "Terminate"};
 
 const std::vector<std::string> IO::OPTIONS_CHEQUE = {"Cancel",
   "Approve cheque", "Refuse cheque"};
@@ -62,7 +62,7 @@ const std::vector<std::string> IO::OPTIONS_TRANSFER = {"Cancel",
   "Approve transfer", "Refuse transfer"};
 
 // Prompt the user for a choice from a specific menu passed as _options_.
-int IO::prompt(std::vector<std::string> options) {
+const int IO::prompt(const std::vector<std::string> options) {
   int size = options.size();
   for(int i = 0; i < size; i++) {
     std::cout << std::left << "[" << i + 1 << "] " <<
@@ -80,8 +80,8 @@ int IO::prompt(std::vector<std::string> options) {
   return ret;
 }
 
-bool IO::inputNumber(std::string& ref, bool positive,
-  bool integer, int digits) {
+const bool IO::inputNumber(std::string& ref, const bool positive,
+  const bool integer, const int digits) {
   std::cin >> ref;
   // Check that first char is a digit first, to use strtod.
   if(ref.empty() ||
@@ -109,7 +109,7 @@ bool IO::inputNumber(std::string& ref, bool positive,
   return true;
 }
 
-int IO::getObfuscated() {
+const int IO::getObfuscated() {
   #if defined (__LINUX__) || defined(__gnu_linux__) \
     || defined(__linux__) || (__APPLE__)
     int digit;
@@ -150,7 +150,7 @@ int IO::getObfuscated() {
   #endif
 }
 
-bool IO::inputPin(std::string& ref) {
+const bool IO::inputPin(std::string& ref) {
 #if defined _WIN32
   int c;
   while(c = _getch()) {
@@ -206,7 +206,7 @@ bool IO::inputPin(std::string& ref) {
 // This prints a row using the _data_ passed. It sets each column's width
 // as well as the alignment. If we have a table header (_header_ = true)
 // then we also add an extra newline.
-void IO::printRow(std::vector<cell> data, bool header) {
+void IO::printRow(const std::vector<cell> data, const bool header) {
   for(cell element: data) {
     if(element.align == IO::ALIGN_LEFT) std::cout << std::left;
     else std::cout << std::right;
@@ -217,7 +217,7 @@ void IO::printRow(std::vector<cell> data, bool header) {
   if(header) std::cout << std::endl;
 }
 
-std::string IO::getDate() {
+const std::string IO::getDate() {
   time_t timer = time(NULL);
   char datec[26];
   strftime(datec, 26, "%Y/%m/%d %H:%M:%S", localtime(&timer));
@@ -237,7 +237,7 @@ void IO::splash() {
 // 32 bit integer clashing with another are slimmer than those of Earth
 // getting hit by a meteorite. It should be fine.
 
-int IO::getUUID() {
+const int IO::getUUID() {
   srand(time(0));
   return rand();
 }

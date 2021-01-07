@@ -5,9 +5,9 @@
 
 class Login {
 public:
-  static bool login(std::string, std::string);
-  static void login(int);
-  
+  static bool login(const std::string, const std::string);
+  static void login(const int);
+
   static bool logged();
   static void logout();
 

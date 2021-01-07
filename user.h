@@ -6,25 +6,25 @@
 class User {
 
 public:
-  User(int number): id(number) {};
+  User(const int number): id(number) {};
 
-  void addMovement(std::string, double, std::string,
-    std::string, int uuid = 0);
+  void addMovement(const std::string, const double, const std::string,
+    const std::string, int uuid = 0);
 
-  void setBalance(double);
-  void setAttempts(int);
+  void setBalance(const double);
+  void setAttempts(const int);
 
-  std::string getCardNumber();
-  std::string getPin();
-  double getBalance();
-  int getID();
-  int getAttempts();
+  const std::string getCardNumber() const;
+  const std::string getPin() const;
+  const double getBalance() const;
+  const int getID() const;
+  const int getAttempts() const;
 
-  bool isAdmin();
+  const bool isAdmin() const;
 
 private:
-  CSVRow* getRow();
-  int id;
+  const CSVRow* getRow() const;
+  const int id;
 };
 
 #endif
