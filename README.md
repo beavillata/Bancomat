@@ -104,6 +104,10 @@ To protect the system from brute force attacks a user can only insert a wrong pa
 
 Moreover, pin characters are hidden while typing to make the login process safer. Since this method requires interaction with the output system, full compatibility on windows machines is not ensured.
 
+##ID
+
+To protect personal informations of customers, an ID has been generated. We decided not to use the card number as ID so that if only a file is violated it would be hard to connect the informations to a specific individual. For instance, reading the movement file, you will not know who performed the transaction without having also access to the credentials database. 
+
 ## UML
 
 ### Use case diagram

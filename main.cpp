@@ -18,10 +18,10 @@ int main(int argc, char* argv[]) {
       std::cout << "Invalid card number." << std::endl;
       continue;
     }
-    std::cout << "Select the option: \n[1]. Continue [2]. Exit" << std::endl;
+    std::cout << "Select the option: \n[1]. Continue    [2]. Exit" << std::endl;
     int option;
     std::cin >> option;
-    if(option==2) {
+    if(option == 2) {
       Login::logout();
       continue;
     }
