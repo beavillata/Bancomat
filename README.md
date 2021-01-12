@@ -121,7 +121,7 @@ To protect personal data of customers, an ID has been generated. We decided not 
 
 ### Class
 
-![alt text](https://github.com/hbar-boi/Bancomat/blob/master/docs/class_diagram.jpeg?raw=true)
+![alt text](https://github.com/hbar-boi/Bancomat/blob/master/docs/Class_diagram.png?raw=true)
 
 ## Authors
 * [Filippo Miserocchi](https://github.com/hbar-boi)
