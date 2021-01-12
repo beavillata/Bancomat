@@ -119,7 +119,7 @@ To protect personal data of customers, an ID has been generated. We decided not 
 
 ![alt text](https://github.com/hbar-boi/Bancomat/blob/master/docs/Use_case_diagram.png?raw=true)
 
-### Class
+### Class diagram
 
 ![alt text](https://github.com/hbar-boi/Bancomat/blob/master/docs/Class_diagram.png?raw=true)
 
