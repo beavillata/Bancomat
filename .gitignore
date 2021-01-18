@@ -3,5 +3,7 @@
 *.o
 *.csv
 encrypter
+encrypter2
+UnitoBank
 *.obj
 *.exe
