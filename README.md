@@ -39,7 +39,7 @@ Download the repository from the project's page:
 git clone
 ```
 ### Instructions
-Compile the project from the terminal with:
+On Unix compile the project from the terminal with:
 ```
 make
 ```
@@ -47,6 +47,10 @@ The Makefile is responsible to manage the dependencies and will create the objec
 To clear the directory from this files between one make and another you can use:
 ```
 make clean
+```
+On Windows compile by: 
+```
+cl /EHsc /std:c++17 login.cpp user.cpp main.cpp admin.cpp operations.cpp io.cpp csv\csv_cell.cpp csv\csv_dim.cpp csv\csv_file.cpp /link /out:UnitoBank.exe
 ```
 After the execution of the compiled files
 you will be direct to the login page.
@@ -88,7 +92,7 @@ A system to store customer's data has been developed. To preserve those we elabo
 The *csv* files are converted to *dat* using a secret key to make them unreadable.
 For educative reasons the *encrypter* file is included between the file and it is possible to convert files to read them. Normally this must be avoided.
 
-To encrypt or decrypt a file is possible to execute the following command line:
+To encrypt or decrypt a file is possible to execute the following command line on Unix:
 ```
 make encryption
 ```
