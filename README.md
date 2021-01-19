@@ -1,6 +1,6 @@
 # Unito Bank
 
-Program developed to handle an ATM. It is possible to login as a customer to withdraw or deposit money to the account or login as an admin fixing any problem or inconvenience.
+Program developed to handle an ATM. It is possible to login as a customer to withdraw or deposit money to the account or login as an admin fixing any problem or inconveniences.
 
 **Customers** are able to:
 * Know the current balance;
