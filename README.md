@@ -18,6 +18,8 @@ Program developed to handle an ATM. It is possible to login as a customer to wit
 * Validate transfers towards external banks;
 * Enter customer accounts to fix problems;
 * Reactivate blocked accounts;
+* Close the ATM's program;
+
 
 **Control conditions** have been added to admit only valid transactions:
 * If the pin inserted is wrong for three consecutive times the account is blocked and must be reactivated by an admin;
