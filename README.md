@@ -34,13 +34,13 @@ Program developed to handle an ATM. It is possible to login as a customer to wit
 * [GNU C++ Compiler](https://www3.ntu.edu.sg/home/ehchua/programming/cpp/gcc_make.html)
 * Make
 
-The program also works on windows but full compatibility is not guaranteed.
+The program also works on windows, however full compatibility is not guaranteed.
 
 ### Installation
 
 Download the repository from the project's page:
 ```
-git clone
+git clone https://github.com/hbar-boi/Bancomat
 ```
 ### Instructions
 On Unix compile the project from the terminal with:
