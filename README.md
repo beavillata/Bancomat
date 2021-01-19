@@ -30,9 +30,10 @@ Program developed to handle an ATM. It is possible to login as a customer to wit
 
 ## Getting Started
 
-### Prerequisites
+### Unix Prerequisites
 * [GNU C++ Compiler](https://www3.ntu.edu.sg/home/ehchua/programming/cpp/gcc_make.html)
 * Make
+The program also works on windows but full compatibility is not guaranteed.
 
 ### Installation
 
