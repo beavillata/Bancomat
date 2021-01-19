@@ -87,12 +87,13 @@ The admin login has the following options:
 5. **Manage transfers**: when transfers to external banks are performed they need to be validated, checking if the bank exists and if the card number is correct. The admin is responsible to do that and he can then decide to *Approve* or *Refuse* them.
 6. **Manage account**: the admin is able to enter customer's account by indicating the Card Number in order to fix problems or check movements;
 7. **Reactivate account**: when a user tries to login but uses a wrong pin for three consecutive times the account is automatically blocked. The admin is able to reactivate it under request of the customer.
+8. **Terminate**: closes the ATM's program.
 
 ## Security
 
 ### Encryption
 
-A system to store customer's data has been developed. To preserve those we elaborated an encryption method based on the XOR cipher.
+A system to store customer's data has been developed. To preserve them we elaborated an encryption method based on the XOR cipher.
 The *csv* files are converted to *dat* using a secret key to make them unreadable.
 For educative reasons the *encrypter* file is included between the file and it is possible to convert files to read them. Normally this must be avoided.
 
@@ -106,6 +107,16 @@ this will generate an executable file that can be called by:
 ```
 The program will ask you the name of the file you want to encrypt/decrypt and then if the conversion you want to do is from *dat* to *csv* or from *csv* to *dat*.
 After the program ends a new file will be available.
+
+To encrypt all the files at once:
+```
+make encrypt_all
+```
+the executable file is then callable by:
+```
+./encrypter2
+```
+You again have the chance to choose if you want to encrypt or decrypt them.
 
 ## Password
 
